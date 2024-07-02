@@ -23,6 +23,7 @@ public class UserService {
             throw new DataIntegrityViolationException("Email já existe,tente outro por favor");
         }
 
+        System.out.println("recebi exernamente");
         User userModel = modelMapper.map(userDTO, User.class);
         userModel.setUsername(userDTO.getUsername());
         userModel.setEmail(userDTO.getEmail());

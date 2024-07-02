@@ -21,6 +21,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<ResponseApiMessageStatus> createUser(@RequestBody UserDTO userDTO, UriComponentsBuilder uriBuilder){
+        System.out.println(userDTO);
         ResponseApiMessageStatus response = service.createUserService(userDTO);
         URI path = uriBuilder.path("/users/{id}").buildAndExpand(userDTO.getId()).toUri();
 
