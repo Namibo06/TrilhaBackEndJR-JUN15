@@ -12,6 +12,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,6 +47,17 @@ public class UserService {
         userDTO.setUsername(userModel.getUsername());
         userDTO.setEmail(userModel.getEmail());
         return userDTO;
+    }
+
+    public List<UserDTO> findAll(){
+        List<User> userList=repository.findAll();
+        List<UserDTO> userDTOList = new ArrayList<>();
+        for (User user:userList){
+            UserDTO userDTO=modelMapper.map(user,UserDTO.class);
+            userDTOList.add(userDTO);
+        }
+
+        return userDTOList;
     }
 
     public Boolean existsByEmailService(String email){
