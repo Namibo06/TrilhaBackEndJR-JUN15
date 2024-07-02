@@ -61,7 +61,7 @@ public class UserService {
         return userDTOList;
     }
 
-    public ResponseUserDTO updateUserByIdService(Long id,ResponseUserDTO userDTO){
+    public ResponseApiMessageStatus updateUserByIdService(Long id,ResponseUserDTO userDTO){
         boolean existsUser = existsUserById(id);
         if(!existsUser){
             throw new EntityNotFoundException("Usuário não encontrado");
@@ -71,10 +71,13 @@ public class UserService {
         userModel.map(user ->{
             user.setUsername(userDTO.getUsername());
             user.setEmail(userDTO.getEmail());
+            repository.save(user);
             return user;
         });
+        String message = "Usuário atualizado com sucesso";
+        Integer status = 200;
 
-        return modelMapper.map(userModel,ResponseUserDTO.class);
+        return new ResponseApiMessageStatus(message,status);
     }
 
     public boolean existsUserById(Long id){
