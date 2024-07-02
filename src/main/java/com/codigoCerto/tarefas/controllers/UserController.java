@@ -1,6 +1,7 @@
 package com.codigoCerto.tarefas.controllers;
 
 import com.codigoCerto.tarefas.dtos.ResponseApiMessageStatus;
+import com.codigoCerto.tarefas.dtos.ResponsePasswordDTO;
 import com.codigoCerto.tarefas.dtos.ResponseUserDTO;
 import com.codigoCerto.tarefas.dtos.UserDTO;
 import com.codigoCerto.tarefas.services.UserService;
@@ -41,6 +42,13 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<ResponseApiMessageStatus> updateUserById(@PathVariable Long id,@RequestBody ResponseUserDTO userDTO){
         ResponseApiMessageStatus response = service.updateUserByIdService(id,userDTO);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("updatePassword/{id}")
+    public ResponseEntity<ResponseApiMessageStatus> updatePasswordById(@PathVariable Long id, @RequestBody ResponsePasswordDTO passwordDTO){
+        ResponseApiMessageStatus response = service.updatePasswordByIdService(id,passwordDTO);
 
         return ResponseEntity.ok(response);
     }
