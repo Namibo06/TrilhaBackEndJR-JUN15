@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/users")
@@ -17,7 +20,10 @@ public class UserController {
     private UserService service;
 
     @PostMapping
-    public ResponseEntity<ResponseApiMessageStatus> createUser(@RequestBody UserDTO userDTO){
+    public ResponseEntity<ResponseApiMessageStatus> createUser(@RequestBody UserDTO userDTO, UriComponentsBuilder uriBuilder){
+        ResponseApiMessageStatus response = service.createUserService(userDTO);
+        URI path = uriBuilder.path("/users/{id}").buildAndExpand(userDTO.getId()).toUri();
 
+        return ResponseEntity.created(path).body(response);
     }
 }
