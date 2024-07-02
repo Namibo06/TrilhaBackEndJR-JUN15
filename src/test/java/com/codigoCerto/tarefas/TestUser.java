@@ -1,6 +1,7 @@
 package com.codigoCerto.tarefas;
 
 import com.codigoCerto.tarefas.dtos.ResponseApiMessageStatus;
+import com.codigoCerto.tarefas.dtos.ResponseUserDTO;
 import com.codigoCerto.tarefas.dtos.UserDTO;
 import com.codigoCerto.tarefas.services.UserService;
 import org.junit.jupiter.api.Test;
@@ -24,5 +25,12 @@ public class TestUser {
         assertThrowsExactly(DataIntegrityViolationException.class,()->{
             service.createUserService(userDTO);
         });
+    }
+
+    @Test
+    public void testGetFindById(){
+        Long id = 1L;
+        ResponseUserDTO userDTO=service.findUserById(id);
+        assertNotNull(userDTO);
     }
 }
