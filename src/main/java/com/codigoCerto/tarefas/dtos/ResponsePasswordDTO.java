@@ -6,5 +6,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ResponsePasswordDTO {
+    Long id;
+    String username;
+    String email;
     String password;
 }
