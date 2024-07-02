@@ -4,7 +4,7 @@
 #### ● Vá em "Repositories" e escolha o projeto "TrilhaBackEndJR-JUN15"
 #### ● Clique no botão "<> Code",escolha entre HTTPS,SSH e GitHub CLI
 #### ● Seguindo exemplo do HTTPS,execute o comando abaixo no seu terminal,na pasta em que deseja que o projeto esteja
-#### ```git clone https://github.com/Namibo06/TrilhaBackEndJR-JUN15.git````
+#### ```git clone https://github.com/Namibo06/TrilhaBackEndJR-JUN15.git```
 
 
 ## Sobre o projeto
@@ -14,8 +14,53 @@
 #### ● Atualiza Tarefas
 #### ● Deleta Tarefas
 
-### Simplesmente um CRUD (CREATE-READ-UPDATE-DELETE),como é uma API,não tem sua interface,porém mesmo sem uma interface através de endpoint's pode-se ser testada,seja através de testes dentro do sistema (Exemplo: Testes Unitários) ou testes externos (Exemplo: Insomnia)   
+### Simplesmente um CRUD (CREATE-READ-UPDATE-DELETE),como é uma API,não tem sua interface,porém mesmo sem uma interface através de endpoint's pode-se ser testada,seja através de testes dentro do sistema (Exemplo: Testes Unitários) ou testes externos (Exemplo: Insomnia)
+### Tecnologias utilizadas:
+#### ● Back-end: SpringBoot 3.3.1
+#### ● Database: SQLite
+#### ● Host: Railway
 
 
 ## Documentação
+### Estrutura do projeto:
+```
+meu-projeto/
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   └── com/
+│   │   │       └── codigoCerto/
+│   │   │           └── tarefas/
+│   │   │               ├── configs/
+│   │   │               │   └──Configuration
+│   │   │               ├── controllers/
+│   │   │               │   └── UserController
+│   │   │               ├── models/
+│   │   │               │   └── User
+│   │   │               └── TarefasApplication
+│   │   └── resources/
+│   │       └── application.properties
+│   └── test/
+│       └── java/
+│           └── com/
+│               └── codigoCerto/
+│                   └── controllers/
+│                       └── MainControllerTest
+├── pom.xml
+└── README.md
+```
 
+
+## Models
+### Tabela User - "tb_user"
+### Atributos: 
+#### ● id - Long - PRIMARY KEY
+#### ● username - String - NOT NULL 
+#### ● email - String - NOT NULL UNIQUE
+#### ● password - String - NOT NULL
+#### ● token - String
+
+
+### Tabela Task - "tb_task"
+### Atributos:
+#### ●
