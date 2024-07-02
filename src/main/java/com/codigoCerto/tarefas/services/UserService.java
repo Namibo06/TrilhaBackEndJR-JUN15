@@ -5,6 +5,7 @@ import com.codigoCerto.tarefas.dtos.ResponseUserDTO;
 import com.codigoCerto.tarefas.dtos.UserDTO;
 import com.codigoCerto.tarefas.models.User;
 import com.codigoCerto.tarefas.repositories.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -40,8 +41,11 @@ public class UserService {
     }
 
     public ResponseUserDTO findUserById(Long id){
-        Optional<User> userModel = repository.findById(id);
-        return modelMapper.map(userModel, ResponseUserDTO.class);
+        User userModel = repository.findById(id).orElseThrow(()-> new EntityNotFoundException("ID de usuário não encontrado"));
+        ResponseUserDTO userDTO = new ResponseUserDTO();
+        userDTO.setUsername(userModel.getUsername());
+        userDTO.setEmail(userModel.getEmail());
+        return userDTO;
     }
 
     public Boolean existsByEmailService(String email){
