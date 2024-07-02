@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -29,5 +30,11 @@ public class UserController {
     public ResponseEntity<ResponseUserDTO> getUserById(@PathVariable Long id, @RequestBody ResponseUserDTO userDTO){
         ResponseUserDTO userById = service.findUserById(id);
         return ResponseEntity.ok(userById);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<UserDTO>> getAllUsers(){
+        List<UserDTO> userDTOList = service.findAll();
+        return ResponseEntity.ok(userDTOList);
     }
 }
