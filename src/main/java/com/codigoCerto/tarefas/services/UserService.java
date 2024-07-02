@@ -8,6 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService {
@@ -17,6 +18,7 @@ public class UserService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Transactional
     public ResponseApiMessageStatus createUserService(UserDTO userDTO){
         boolean existsByEmail = existsByEmailService(userDTO.getEmail());
         if (existsByEmail){
@@ -29,7 +31,7 @@ public class UserService {
         userModel.setEmail(userDTO.getEmail());
         userModel.setPassword(userDTO.getPassword());
         repository.save(userModel);
-
+        System.out.println("Salvei");
         String message = "Usuário criado com sucesso!";
         Integer status = 201;
         return new ResponseApiMessageStatus(message,status);
