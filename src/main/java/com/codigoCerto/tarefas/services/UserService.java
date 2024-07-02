@@ -44,6 +44,7 @@ public class UserService {
     public ResponseUserDTO findUserById(Long id){
         User userModel = repository.findById(id).orElseThrow(()-> new EntityNotFoundException("ID de usuário não encontrado"));
         ResponseUserDTO userDTO = new ResponseUserDTO();
+        userDTO.setId(userModel.getId());
         userDTO.setUsername(userModel.getUsername());
         userDTO.setEmail(userModel.getEmail());
         return userDTO;
