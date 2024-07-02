@@ -1,6 +1,7 @@
 package com.codigoCerto.tarefas.services;
 
 import com.codigoCerto.tarefas.dtos.ResponseApiMessageStatus;
+import com.codigoCerto.tarefas.dtos.ResponsePasswordDTO;
 import com.codigoCerto.tarefas.dtos.ResponseUserDTO;
 import com.codigoCerto.tarefas.dtos.UserDTO;
 import com.codigoCerto.tarefas.models.User;
@@ -68,11 +69,29 @@ public class UserService {
         }
 
         Optional<User> userModel = repository.findById(id);
-        userModel.map(user ->{
+        userModel.map(user -> {
             user.setUsername(userDTO.getUsername());
             user.setEmail(userDTO.getEmail());
             repository.save(user);
             return user;
+        });
+        String message = "Usuário atualizado com sucesso";
+        Integer status = 200;
+
+        return new ResponseApiMessageStatus(message,status);
+    }
+
+    public ResponseApiMessageStatus updatePasswordByIdService(Long id, ResponsePasswordDTO passwordDTO){
+        boolean existsUser = existsUserById(id);
+        if(!existsUser){
+            throw new EntityNotFoundException("Usuário não encontrado");
+        }
+
+        Optional<User> userModel = repository.findById(id);
+        userModel.map(user -> {
+           user.setPassword(passwordDTO.getPassword());
+           repository.save(user);
+           return user;
         });
         String message = "Usuário atualizado com sucesso";
         Integer status = 200;
