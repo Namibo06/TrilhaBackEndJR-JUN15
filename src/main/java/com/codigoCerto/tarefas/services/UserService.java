@@ -61,6 +61,26 @@ public class UserService {
         return userDTOList;
     }
 
+    public ResponseUserDTO updateUserByIdService(Long id,ResponseUserDTO userDTO){
+        boolean existsUser = existsUserById(id);
+        if(!existsUser){
+            throw new EntityNotFoundException("Usuário não encontrado");
+        }
+
+        Optional<User> userModel = repository.findById(id);
+        userModel.map(user ->{
+            user.setUsername(userDTO.getUsername());
+            user.setEmail(userDTO.getEmail());
+            return user;
+        });
+
+        return modelMapper.map(userModel,ResponseUserDTO.class);
+    }
+
+    public boolean existsUserById(Long id){
+        return repository.existsById(id);
+    }
+
     public Boolean existsByEmailService(String email){
         return repository.existsByEmail(email);
     }
