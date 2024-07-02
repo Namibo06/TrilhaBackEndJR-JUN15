@@ -54,10 +54,10 @@ meu-projeto/
 ## Models
 ### Tabela User - "tb_user"
 ### Atributos: 
-#### ● id - Long - PRIMARY KEY
-#### ● username - String - NOT NULL 
-#### ● email - String - NOT NULL UNIQUE
-#### ● password - String - NOT NULL
+#### ● id - Long - Chave Primária
+#### ● username - String - Não Nulo | Tamanho variável até 20 caracteres 
+#### ● email - String - Não Nulo | Único | Tamanho variável até 120 caracteres
+#### ● password - String - Não Nulo | Único | Tamanho variável até 100 caracteres
 #### ● token - String
 
 
