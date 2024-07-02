@@ -89,9 +89,11 @@ public class UserService {
 
         Optional<User> userModel = repository.findById(id);
         userModel.map(user -> {
-           user.setPassword(passwordDTO.getPassword());
-           repository.save(user);
-           return user;
+            user.setUsername(user.getUsername());
+            user.setEmail(user.getEmail());
+            user.setPassword(passwordDTO.getPassword());
+            repository.save(user);
+            return user;
         });
         String message = "Usuário atualizado com sucesso";
         Integer status = 200;
