@@ -87,14 +87,12 @@ public class UserService {
             throw new EntityNotFoundException("Usuário não encontrado");
         }
 
-        Optional<User> userModel = repository.findById(id);
-        userModel.map(user -> {
-            user.setUsername(user.getUsername());
-            user.setEmail(user.getEmail());
-            user.setPassword(passwordDTO.getPassword());
-            repository.save(user);
-            return user;
+        User userModel = repository.findById(id).orElseThrow(() -> {
+            throw new EntityNotFoundException("Usuário não encontrado");
         });
+        System.out.println(userModel.getEmail());
+        userModel.setEmail(userModel.getEmail());
+        userModel.setPassword(passwordDTO.getPassword());
         String message = "Usuário atualizado com sucesso";
         Integer status = 200;
 
