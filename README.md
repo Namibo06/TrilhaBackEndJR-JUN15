@@ -32,11 +32,20 @@ meu-projeto/
 │   │   │       └── codigoCerto/
 │   │   │           └── tarefas/
 │   │   │               ├── configs/
-│   │   │               │   └──Configuration
+│   │   │               │   └──Configs
 │   │   │               ├── controllers/
 │   │   │               │   └── UserController
+│   │   │               ├── dtos/
+│   │   │               │   └── ResponseApiMessageStatus
+│   │   │               │   └── ResponsePasswordDTO
+│   │   │               │   └── ResponseUserDTO
+│   │   │               │   └── UserDTO
 │   │   │               ├── models/
 │   │   │               │   └── User
+│   │   │               ├── repositories/
+│   │   │               │   └── UserRepository
+│   │   │               ├── services/
+│   │   │               │   └── UserService
 │   │   │               └── TarefasApplication
 │   │   └── resources/
 │   │       └── application.properties
@@ -44,8 +53,10 @@ meu-projeto/
 │       └── java/
 │           └── com/
 │               └── codigoCerto/
-│                   └── controllers/
-│                       └── MainControllerTest
+│                   └── tarefas/
+│                       └── TarefasApplicationTest
+│                       └── TestUser
+├── database.db
 ├── pom.xml
 └── README.md
 ```
