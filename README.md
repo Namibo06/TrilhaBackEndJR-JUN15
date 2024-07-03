@@ -288,7 +288,7 @@ public ResponseEntity<ResponseApiMessageStatus> createUser(@RequestBody UserDTO 
     return ResponseEntity.created(path).body(response);
 }
 ```
-#### ↑ O controlador para criar usuário utiliza anotação 'PostMapping',o retorno é do tipo ResponseEntity<ResponseApiMessageStatus>,recebe por parâmetro UserDTO acompanhado da anotação 'RequestBody' que diz que são requisições com corpo,e UriComponentBuilder que iremos utilizar para a determinar a path mais tarde.
+#### ↑ O controlador para criar usuário,utiliza a anotação 'PostMapping',o retorno é do tipo ResponseEntity<ResponseApiMessageStatus>,recebe por parâmetro UserDTO acompanhado da anotação 'RequestBody' que diz que são requisições com corpo,e UriComponentBuilder que iremos utilizar para a determinar a path mais tarde.
 #### ↑ Tem um atributo que recebe o retorno da service createUserService do tipo ResponseApiMessageStatus,que recebe por parãmetro userDTO 
 #### ↑ Logo abaixo,tem um atributo path do tipo URI,que recebe o parâmetro uriBuilder acessando o método path definindo o caminho até o id,logo após defino o id recebendo-o através do parâmetro userDTO do método buildAndExpand e depois transformo em URI.
 #### ↑ O retorno é ResponseEntity,que acessa created inserindo o atriuto path e depois acessa body inserindo o atributo response.
@@ -302,7 +302,60 @@ public ResponseEntity<ResponseUserDTO> getUserById(@PathVariable Long id){
     return ResponseEntity.ok(userById);
 }
 ```
-#### ↑
-#### ↑
-#### ↑
-#### ↑
+#### ↑ O controlador para buscar um usuário pelo id,utiliza a anotação 'GetMapping' com um id depois da barra na rota,o retorno é do tipo ResponseEntity<ResponseUserDTO>,recebe por parâmetro id do tipo Long através da anotação 'PathVariable'.
+#### ↑ Tem um atributo userById do tipo ResponseUserDTO que recebe da service o método findUserById passando por parâmetro o id.
+#### ↑ O retorno é ResponseEntity,que acessando ok passa o atributo userById.
+
+
+
+```
+@GetMapping
+public ResponseEntity<List<UserDTO>> getAllUsers(){
+    List<UserDTO> userDTOList = service.findAll();
+    return ResponseEntity.ok(userDTOList);
+}
+```
+#### ↑ O controlador para buscar todos usuários,utiliza a anotação 'GetMapping',o retorno é do tipo ResponseEntity<List<UserDTO>>.
+#### ↑ Tem um atributo userDTOList do tipo lista UserDTO que recebe da service pelo método findAll todos usuários.
+#### ↑ O retorno é ResponseEntity,que acessando ok,passa o atributo userDTOList.
+
+
+
+```
+@PutMapping("/{id}")
+public ResponseEntity<ResponseApiMessageStatus> updateUserById(@PathVariable Long id,@RequestBody ResponseUserDTO userDTO){
+    ResponseApiMessageStatus response = service.updateUserByIdService(id,userDTO);
+
+    return ResponseEntity.ok(response);
+}
+```
+#### ↑ O controlador para atualizar o username e email de um usuário pelo id,utiliza a anotação 'PutMapping' definindo barra id na rota,o retorno é do tipo ResponseEntity<ResponseApiMessageStatus>,recebe como parâmetro id do tipo Long pela anotacao 'PathVariable',e userDTO do tipo ResponseUserDTO que utiliza a anotacao 'RequestBody' para captar os dados durante a requisição.
+#### ↑ Tem um atributo response do tipo ResponseApiMessageStatus,que recebe da service,o método updateUserByIdService,com parâmetros id e userDTO.
+#### ↑ O retorno é ResponsiveEntity,que ao acessar o método ok,passa o atributo response.
+
+
+
+```
+@PutMapping("updatePassword/{id}")
+public ResponseEntity<ResponseApiMessageStatus> updatePasswordById(@PathVariable Long id, @RequestBody ResponsePasswordDTO passwordDTO){
+    ResponseApiMessageStatus response = service.updatePasswordByIdService(id,passwordDTO);
+
+    return ResponseEntity.ok(response);
+}
+```
+#### ↑ O controlador para atualizar a password de um usuário pelo id,utiliza a anotação 'PutMapping' definindo barra updatePassword barra id na rota,o retorno é do tipo ResponseEntity<ResponseApiMessageStatus>,recebe como parâmetro id do tipo Long pela anotacao 'PathVariable',e passwordDTO do tipo ResponsePasswordDTO que utiliza a anotacao 'RequestBody' para captar os dados durante a requisição.
+#### ↑ Tem um atributo response do tipo ResponseApiMessageStatus,que recebe da service,o método updatePasswordByIdService,com parâmetros id e passwordDTO.
+#### ↑ O retorno é ResponsiveEntity,que ao acessar o método ok,passa o atributo response.
+
+
+
+```
+@DeleteMapping("/{id}")
+public ResponseEntity<Void> deleteUserById(@PathVariable Long id){
+    service.deleteUserByIdService(id);
+    return ResponseEntity.noContent().build();
+}
+```
+#### ↑ O controlador para deletar um usuário pelo id,utiliza a anotação 'DeleteMapping' definindo barra id na rota,o retorno é do tipo ResponseEntity<Void>,recebe como parâmetro id do tipo Long pela anotacao 'PathVariable'.
+#### ↑ Acessa o méotodo deleteUserByIdService da propriedade service vinda através da injeção de dependência,com id como parâmetro. 
+#### ↑ O retorno é ResponseEntity,que é sem conteúdo,como é sem conteúdo tenho que acecssar noContent() e logo após build().
