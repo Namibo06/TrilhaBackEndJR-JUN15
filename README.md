@@ -69,14 +69,14 @@ meu-projeto/
 
 -------------------------------------------------------------------
 ## Configs
-### Configs
-#### Utilizei esta class para receber um "@Bean" do ModelMapper, que serve para mapeamento de classes,foi utilizados justamente com o método map() para converter por exemplo User(Model) para UserDTO(DTO) como Models são o que vão para o banco e o que retornam deles,o que vem por meio de requisição e o que é retornado é um DTO,e por isso deve-se ser convertidos
+### ■ Configs
+#### Utilizei esta class para receber um "@Bean" da class ModelMapper, que serve para mapeamento de entidade para DTO ou vice versa,como Models são o que vão para o banco e o que retornam deles,o que vem por meio de requisição e o que é retornado é um DTO,e por isso deve-se ser convertidos.
 
 
 
 -------------------------------------------------------------------
 ## Models
-### Tabela User - "tb_user"
+### ■ Tabela User - "tb_user"
 ### Atributos: 
 #### ● id - Long - Chave Primária
 #### ● username - String - Não Nulo | Tamanho variável até 20 caracteres 
@@ -85,7 +85,7 @@ meu-projeto/
 #### ● token - String
 
 
-### Tabela Task - "tb_task"
+### ■ Tabela Task - "tb_task"
 ### Atributos:
 #### ●
 
@@ -98,19 +98,19 @@ meu-projeto/
 #### ● status - Integer
 
 
-### ResponsePasswordDTO
+### ■ ResponsePasswordDTO
 ### Atributos
 #### ● password - String
 
 
-### ResponseUserDTO
+### ■ ResponseUserDTO
 ### Atributos
 #### ● id - Long
 #### ● username - String
 #### ● email - String
 
 
-### UserDTO
+### ■ UserDTO
 ### Atributos
 #### ● id - Long
 #### ● username - String
@@ -120,13 +120,13 @@ meu-projeto/
 
 ---------------------------------------------------------------------
 ## Repositories
-### UserRepository
+### ■ UserRepository
 #### Contém um método ```Boolean existsByEmail(String email)``` retorna um Boolean e recebe por parâmetro um email do tipo String,ou seja se for encontrado um usuário com um email que já existe,retorna true,senão retorna false
 
 
 ----------------------------------------------------------------------
 ## Services
-### UserService
+### ■ UserService
 ### Propriedades (utilizo a anotação Autowired para injetar as dependências)
 #### ● modelMapper (Mapeamento de entidade e DTO's)
 #### ● repository (Acessar o repositório do usuário)
@@ -137,7 +137,8 @@ public Boolean existsByEmailService(String email){
     return repository.existsByEmail(email);
 }
 ``` 
-#### ↑ Retorna um Boolean se existir ou não um usuário com determinado email que é do tipo String e é passado por parâmetro
+#### ↑ Retorna um Boolean se existir ou não um usuário com determinado email que é do tipo String e é passado por parâmetro.
+
 
 
 ```
@@ -145,7 +146,8 @@ public boolean existsUserById(Long id){
     return repository.existsById(id);
 }
 ``` 
-#### ↑ Retorna um Boolean se existir ou não um usuário com um determinado id que é do tipo Long passado por parâmetro
+#### ↑ Retorna um Boolean se existir ou não um usuário com um determinado id que é do tipo Long passado por parâmetro.
+
 
 
 ```
@@ -168,7 +170,7 @@ public ResponseApiMessageStatus createUserService(UserDTO userDTO){
 ``` 
 #### ↑ O método retorna um ResponseApiMessageStatus,sua finalidade é criar um usuário,recebe como parâmetro um UserDTO,é atribuido a um atributo do tipo boolean o método existsByEmailService,onde o email é pegoatravés do getEmail do userDTO trazido da requisição,é verificado se existsByEmail fo igual a true,será lançada uma exceção de DataIntegrityViolationException com uma mensagem personalizada.
 #### ↑ É criado um atributo do tipo User que recebe um mapeamento de DTO para Entidade,é setado as propriedadesdas requisições como username,email e password,que são recuperadas através de userDTO.getNomeDaPropriedade,e chamo o método save() do JPARepository e a entidade é salva no banco de dados.
-#### ↑ É criado dois atributos,um para mensagem e outro para status,ambos para sucesso do processo e personalizados,e tem como retorno uma nova instância de ResponseApiMessageStatus,que recebe por parâmetros os atributos message e status; 
+#### ↑ É criado dois atributos,um para mensagem e outro para status,ambos para sucesso do processo e personalizados,e tem como retorno uma nova instância de ResponseApiMessageStatus,que recebe por parâmetros os atributos message e status. 
 
 
 
@@ -202,8 +204,8 @@ public List<UserDTO> findAll(){
 }
 ```
 #### ↑ O método retorna uma lista de UserDTO,sua finalidade é recuperar todos usuários,até então somente para testes.
-#### ↑ Tem dois atributos,ambos listas,o primeiro do tipo User na qual irá ser armazenado os usuários recuperados do banco através do repository eseu método findAll(),a segunda lista é do tipo UserDTO para armazenar os usuários que de entidade serão mapeados para DTO e começa como um ArrayList vazio 
-#### ↑ É realizado um for do atributo userList que será armazenado cada usuário um atributo do tipo User,dentro do bloco for,tem um atributo do tipo UserDTO,que mapea os dados de entidade para DTO,e adiciona esse atributo na lista de DTO,fora do bloco for,é retornado a lista de DTO.  
+#### ↑ Tem dois atributos,ambos listas,o primeiro do tipo User na qual irá ser armazenado os usuários recuperados do banco através do repository eseu método findAll(),a segunda lista é do tipo UserDTO para armazenar os usuários que de entidade serão mapeados para DTO e começa como um ArrayList vazio.
+#### ↑ É realizado um for do atributo userList que será armazenado cada usuário um atributo do tipo User,dentro do bloco for,tem um atributo do tipo UserDTO,que mapea os dados de entidade para DTO,e adiciona esse atributo na lista de DTO,fora do bloco for,é retornado a lista de DTO.
 
 
 
@@ -227,12 +229,80 @@ public ResponseApiMessageStatus updateUserByIdService(Long id,ResponseUserDTO us
     return new ResponseApiMessageStatus(message,status);
 }
 ```
-#### ↑
-#### ↑
-#### ↑
+#### ↑ O método retorna ResponseApiMessageStatus,sua finalidade é alterar o username e/ou email de um determinado usuário pelo seu id,que tem como parâmetro um id com tipo Long,e um userDTO do tipo ResponseUserDTO.
+#### ↑ Primeiramente tem um atributo do tipo boolean que recebe o método existsUserId que recebe o id como parâmetro,para verificar se o usuário existe realmente,senão existir,é lançada uma exceção do tipo EntityNotFoundException com uma mensagem personalizada.
+#### ↑ Tem um atributo do tipo Optional<User> que facilita o uso do map e prepara caso o retorno seja nulo,o atributo recebe um usuário pelo seu id,logo abaixo,utilizo uma expressão lambda map no atributo setando 'user' como parâmetro,através dele seto username e email,os valores são recuperados através do atributo userDTO,chamo repository,e pelo seu método save,salvo a entidade user e a retorno.
+#### ↑ Crio dois atributos personalizados,um é message do tipo String,e o outro é status do tipo Integer e retorno uma nova instância de ResponseApiMessageStatus que recebe message e status como parâmetros. 
 
 
 
+```
+public ResponseApiMessageStatus updatePasswordByIdService(Long id, ResponsePasswordDTO passwordDTO){
+    boolean existsUser = existsUserById(id);
+    if(!existsUser){
+        throw new EntityNotFoundException("Usuário não encontrado");
+    }
+
+    Optional<User> userModel = repository.findById(id);
+    userModel.map(user -> {
+        user.setUsername(user.getUsername());
+        user.setEmail(user.getEmail());
+        user.setPassword(passwordDTO.getPassword());
+        repository.save(user);
+        return user;
+    });
+
+    String message = "Usuário atualizado com sucesso";
+    Integer status = 200;
+
+    return new ResponseApiMessageStatus(message,status);
+}
+```
+#### ↑ O método retorna ResponseApiMessageStatus,sua finalidade é alterar a password de um determinado usuário pelo seu id,que tem como parâmetro um id com tipo Long,e um userDTO do tipo ResponsePasswordDTO.
+#### ↑ Primeiramente tem um atributo do tipo boolean que recebe o método existsUserId que recebe o id como parâmetro,para verificar se o usuário existe realmente,senão existir,é lançada uma exceção do tipo EntityNotFoundException com uma mensagem personalizada.
+#### ↑ Tem um atributo do tipo Optional<User> que facilita o uso do map e prepara caso o retorno seja nulo,o atributo recebe um usuário pelo seu id,logo abaixo,utilizo uma expressão lambda map no atributo setando 'user' como parâmetro,através dele seto username,email e password,os valores são recuperados através do atributo userDTO,chamo repository,e pelo seu método save,salvo a entidade user e a retorno.
+#### ↑ Crio dois atributos personalizados,um é message do tipo String,e o outro é status do tipo Integer e retorno uma nova instância de ResponseApiMessageStatus que recebe message e status como parâmetros.
+
+
+
+```
+public void deleteUserByIdService(Long id){
+    repository.deleteById(id);
+}
+```
+#### ↑ O método tem o tipo de retorno vazio,ou seja,sem retorno,sua finalidade é deletar um usuário pelo seu id,tem como parâmetro um id do tipo Long
+#### ↑ através do repository,acessa o tipo deleteById com o id como parâmetro
 
 ----------------------------------------------------------------------
 ## Controllers
+### ■ UserController
+#### Recebe duas anotações sob o UserController,o 'RestController' para representar um controller,o 'RequestMapping("/users")' que define uma rota até os métodos
+#### Detém uma propriedade service do tipo UserService,na qual vem a partir de injeção de dependências
+
+```
+@PostMapping
+public ResponseEntity<ResponseApiMessageStatus> createUser(@RequestBody UserDTO userDTO, UriComponentsBuilder uriBuilder){
+    ResponseApiMessageStatus response = service.createUserService(userDTO);
+    URI path = uriBuilder.path("/users/{id}").buildAndExpand(userDTO.getId()).toUri();
+
+    return ResponseEntity.created(path).body(response);
+}
+```
+#### ↑ O controlador para criar usuário utiliza anotação 'PostMapping',o retorno é do tipo ResponseEntity<ResponseApiMessageStatus>,recebe por parâmetro UserDTO acompanhado da anotação 'RequestBody' que diz que são requisições com corpo,e UriComponentBuilder que iremos utilizar para a determinar a path mais tarde.
+#### ↑ Tem um atributo que recebe o retorno da service createUserService do tipo ResponseApiMessageStatus,que recebe por parãmetro userDTO 
+#### ↑ Logo abaixo,tem um atributo path do tipo URI,que recebe o parâmetro uriBuilder acessando o método path definindo o caminho até o id,logo após defino o id recebendo-o através do parâmetro userDTO do método buildAndExpand e depois transformo em URI.
+#### ↑ O retorno é ResponseEntity,que acessa created inserindo o atriuto path e depois acessa body inserindo o atributo response.
+
+
+
+```
+@GetMapping("/{id}")
+public ResponseEntity<ResponseUserDTO> getUserById(@PathVariable Long id){
+    ResponseUserDTO userById = service.findUserById(id);
+    return ResponseEntity.ok(userById);
+}
+```
+#### ↑
+#### ↑
+#### ↑
+#### ↑
