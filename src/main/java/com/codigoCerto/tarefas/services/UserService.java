@@ -102,6 +102,10 @@ public class UserService {
         return new ResponseApiMessageStatus(message,status);
     }
 
+    public void deleteUserByIdService(Long id){
+        repository.deleteById(id);
+    }
+
     public boolean existsUserById(Long id){
         return repository.existsById(id);
     }
