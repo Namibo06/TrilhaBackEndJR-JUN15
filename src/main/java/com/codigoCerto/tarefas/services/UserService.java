@@ -107,6 +107,22 @@ public class UserService {
         repository.deleteById(id);
     }
 
+    public ResponseApiMessageStatus updateTokenById(Long id,String token){
+        existsUserById(id);
+
+        User userModel = repository.findById(id).orElseThrow(()->{
+            throw new EntityNotFoundException("Usuário não encontrado");
+        });
+
+        userModel.setToken(token);
+        repository.save(userModel);
+
+        String message = "Token criado e atualizado com sucesso";
+        Integer status = 200;
+
+        return new ResponseApiMessageStatus(message,status);
+    }
+
     public boolean existsUserById(Long id){
         return repository.existsById(id);
     }
