@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.codigoCerto.tarefas.dtos.LoginDTO;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,7 @@ public class LoginService {
             Algorithm algorithm = Algorithm.HMAC256("CodigoCertoTrilhaBackEndJr");
 
             return JWT.create()
-                    .withIssuer("Código Certo")
+                    .withIssuer("Codigo Certo")
                     .withExpiresAt(expirationDate)
                     .sign(algorithm);
         }catch (JWTCreationException e){
@@ -29,15 +30,17 @@ public class LoginService {
     }
 
     public void verifyToken(String token){
-        DecodedJWT decodedJWT;
         try{
             Algorithm algorithm = Algorithm.HMAC256("CodigoCertoTrilhaBackEndJr");
             JWTVerifier verifier=JWT.require(algorithm)
                     .withIssuer("Codigo Certo")
                     .build();
 
-            decodedJWT = verifier.verify(token);
-        }catch (JWTVerificationException e){
+            DecodedJWT decodedJWT = verifier.verify(token);
+
+        } catch (SignatureVerificationException e) {
+            throw new RuntimeException("Assinatura do token inválida", e);
+        } catch (JWTVerificationException e){
             throw new JWTVerificationException("Falha ao autenticar token: ",e);
         }
     }
