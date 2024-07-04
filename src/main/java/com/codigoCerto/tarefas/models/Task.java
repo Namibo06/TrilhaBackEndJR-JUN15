@@ -21,6 +21,7 @@ public class Task {
     private String title;
     private String description;
     @Column(nullable = false)
+    @Enumerated
     private Status status;
     @Column(nullable = false)
     private Long userId;
