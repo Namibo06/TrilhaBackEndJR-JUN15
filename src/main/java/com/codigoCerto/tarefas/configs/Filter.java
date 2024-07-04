@@ -29,7 +29,7 @@ public class Filter extends OncePerRequestFilter {
     private String findToken(HttpServletRequest request) {
         var authorization = request.getHeader("Authorization");
         if (authorization == null){
-            throw new RuntimeException("Token não encontrado");
+            throw new RuntimeException("Token nao encontrado");
         }
         return  authorization.replace("Bearer","");
     }
