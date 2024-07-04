@@ -1,7 +1,9 @@
 package com.codigoCerto.tarefas.services;
 
+import com.codigoCerto.tarefas.controllers.TaskController;
 import com.codigoCerto.tarefas.dtos.ResponseApiMessageStatus;
 import com.codigoCerto.tarefas.dtos.TaskDTO;
+import com.codigoCerto.tarefas.dtos.UserDTO;
 import com.codigoCerto.tarefas.models.Task;
 import com.codigoCerto.tarefas.repositories.TaskRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -9,6 +11,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -52,5 +56,13 @@ public class TaskService {
         return repository
                 .findAll(pageable)
                 .map(task -> modelMapper.map(task,TaskDTO.class));
+    }
+
+    public EntityModel<TaskDTO> findTaskByIdService(Long id){
+        Task taskModel = repository.findById(id).orElseThrow(()-> new EntityNotFoundException("Tarefa não encontrada"));
+        TaskDTO taskDTO= modelMapper.map(taskModel, TaskDTO.class);
+
+        return EntityModel.of(taskDTO,
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(TaskController.class).findById(id)).withSelfRel());
     }
 }
