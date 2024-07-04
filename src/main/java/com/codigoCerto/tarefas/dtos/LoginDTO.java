@@ -10,7 +10,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class LoginDTO {
-    String token;
-    String message;
-    Integer status;
+    String email;
+    String password;
 }
