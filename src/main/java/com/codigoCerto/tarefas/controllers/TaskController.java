@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -29,10 +30,17 @@ public class TaskController {
         return ResponseEntity.created(path).body(response);
     }
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<Page<TaskDTO>> findAllTasks(@PageableDefault(size = 15) Pageable pageable){
         Page<TaskDTO> pageableTasks =  service.findAllTasksService(pageable);
 
         return ResponseEntity.ok(pageableTasks);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<EntityModel<TaskDTO>> findById(@PathVariable Long id) {
+        EntityModel<TaskDTO> entityModel = service.findTaskByIdService(id);
+
+        return ResponseEntity.ok(entityModel);
     }
 }
