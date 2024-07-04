@@ -54,10 +54,12 @@ public class LoginController {
     }
 
     @PostMapping("/{token}")
-    public ResponseEntity<ResponseVerifiedToken> verifyToken(@PathVariable String token){
+    public ResponseEntity<ResponseApiMessageStatus> verifyToken(@PathVariable String token){
         loginService.verifyToken(token);
+
         String message="Token verificado com sucesso!";
-        ResponseVerifiedToken response = new ResponseVerifiedToken(message);
+        Integer status = 200;
+        ResponseApiMessageStatus response = new ResponseApiMessageStatus(message,status);
 
         return ResponseEntity.ok(response);
     }
