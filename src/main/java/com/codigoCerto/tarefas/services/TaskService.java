@@ -21,7 +21,7 @@ public class TaskService {
     private ModelMapper modelMapper;
 
     public ResponseApiMessageStatus createTaskService(TaskDTO taskDTO){
-        boolean existsUserId=userService.existsUserById(taskDTO.getId());
+        boolean existsUserId=userService.existsUserById(taskDTO.getUserId());
         if (!existsUserId){
             throw new EntityNotFoundException("Usuario não encontrado");
         }
