@@ -8,6 +8,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -54,15 +57,10 @@ public class UserService {
         return userDTO;
     }
 
-    public List<UserDTO> findAll(){
-        List<User> userList=repository.findAll();
-        List<UserDTO> userDTOList = new ArrayList<>();
-        for (User user:userList){
-            UserDTO userDTO=modelMapper.map(user,UserDTO.class);
-            userDTOList.add(userDTO);
-        }
-
-        return userDTOList;
+    public Page<UserDTO> findAll(Pageable pageable){
+        return repository
+                .findAll(pageable)
+                .map(user -> modelMapper.map(user, UserDTO.class));
     }
 
     public ResponseApiMessageStatus updateUserByIdService(Long id,ResponseUserDTO userDTO){
