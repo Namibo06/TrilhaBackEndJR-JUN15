@@ -83,4 +83,8 @@ public class TaskService {
         Integer status=200;
         return new ResponseApiMessageStatus(message,status);
     }
+
+    public void deleteTaskByIdService(Long id){
+        repository.deleteById(id);
+    }
 }
