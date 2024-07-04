@@ -1,9 +1,6 @@
 package com.codigoCerto.tarefas.services;
 
-import com.codigoCerto.tarefas.dtos.ResponseApiMessageStatus;
-import com.codigoCerto.tarefas.dtos.ResponsePasswordDTO;
-import com.codigoCerto.tarefas.dtos.ResponseUserDTO;
-import com.codigoCerto.tarefas.dtos.UserDTO;
+import com.codigoCerto.tarefas.dtos.*;
 import com.codigoCerto.tarefas.models.User;
 import com.codigoCerto.tarefas.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -11,6 +8,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +24,9 @@ public class UserService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private PasswordEncoder encoder;
 
     public ResponseApiMessageStatus createUserService(UserDTO userDTO){
         boolean existsByEmail = existsByEmailService(userDTO.getEmail());
@@ -107,16 +109,24 @@ public class UserService {
         repository.deleteById(id);
     }
 
-    public Boolean authenticateUser(String email,String password){
-        return repository.existsByEmailAndPassword(email,password);
+    public Boolean authenticateUser(LoginDTO loginDTO){
+        Optional<User> optionalUser = repository.findByEmail(loginDTO.getEmail());
+        boolean existsUser = repository.existsByEmailAndPassword(loginDTO.getEmail(),loginDTO.getPassword());
+
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+
+            boolean checkPassword = encoder.matches(loginDTO.getPassword(), user.getPassword());
+            if (!checkPassword) {
+                throw new BadCredentialsException("Senhas não batem");
+            }
+            return true;
+        }
+        return false;
     }
 
-    public ResponseApiMessageStatus updateTokenById(Long id,String token){
-        existsUserById(id);
-
-        User userModel = repository.findById(id).orElseThrow(()->{
-            throw new EntityNotFoundException("Usuário não encontrado");
-        });
+    public ResponseApiMessageStatus updateTokenById(String email,String token){
+        User userModel = repository.findByEmail(email).orElseThrow(()-> new EntityNotFoundException("Usuário não encontrado"));
 
         userModel.setToken(token);
         repository.save(userModel);
