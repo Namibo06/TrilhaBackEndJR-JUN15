@@ -7,6 +7,8 @@ import com.codigoCerto.tarefas.repositories.TaskRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -44,5 +46,11 @@ public class TaskService {
         String message="Tarefa criada com sucesso";
         Integer status=210;
         return new ResponseApiMessageStatus(message,status);
+    }
+
+    public Page<TaskDTO> findAllTasksService(Pageable pageable){
+        return repository
+                .findAll(pageable)
+                .map(task -> modelMapper.map(task,TaskDTO.class));
     }
 }
