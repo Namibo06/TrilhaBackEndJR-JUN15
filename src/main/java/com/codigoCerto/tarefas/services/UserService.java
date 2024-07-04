@@ -37,7 +37,7 @@ public class UserService {
         User userModel = modelMapper.map(userDTO, User.class);
         userModel.setUsername(userDTO.getUsername());
         userModel.setEmail(userDTO.getEmail());
-        userModel.setPassword(userDTO.getPassword());
+        userModel.setPassword(encoder.encode(userDTO.getPassword()));
         repository.save(userModel);
 
         String message = "Usuário criado com sucesso!";
