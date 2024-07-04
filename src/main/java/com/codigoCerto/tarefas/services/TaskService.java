@@ -65,4 +65,22 @@ public class TaskService {
         return EntityModel.of(taskDTO,
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(TaskController.class).findById(id)).withSelfRel());
     }
+
+    public ResponseApiMessageStatus updateTaskByIdService(Long id,TaskDTO taskDTO){
+        boolean existsUserId=userService.existsUserById(taskDTO.getUserId());
+
+        if (!existsUserId){
+            throw new EntityNotFoundException("Usuário não encontrado");
+        }
+
+        Task taskModel = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Tarefa não encontrada"));
+        taskModel.setTitle(taskDTO.getTitle());
+        taskModel.setDescription(taskDTO.getDescription());
+        taskModel.setStatus(taskDTO.getStatus());
+        repository.save(taskModel);
+
+        String message="Tarefa atualizada com sucesso";
+        Integer status=200;
+        return new ResponseApiMessageStatus(message,status);
+    }
 }
