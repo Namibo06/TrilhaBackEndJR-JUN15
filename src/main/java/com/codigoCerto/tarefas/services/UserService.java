@@ -107,6 +107,10 @@ public class UserService {
         repository.deleteById(id);
     }
 
+    public Boolean authenticateUser(String email,String password){
+        return repository.existsByEmailAndPassword(email,password);
+    }
+
     public ResponseApiMessageStatus updateTokenById(Long id,String token){
         existsUserById(id);
 
