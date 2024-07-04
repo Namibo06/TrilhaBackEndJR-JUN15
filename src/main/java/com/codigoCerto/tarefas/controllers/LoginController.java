@@ -2,6 +2,7 @@ package com.codigoCerto.tarefas.controllers;
 
 import com.codigoCerto.tarefas.dtos.LoginDTO;
 import com.codigoCerto.tarefas.dtos.ResponseApiMessageStatus;
+import com.codigoCerto.tarefas.dtos.ResponseTokenDTO;
 import com.codigoCerto.tarefas.dtos.UserDTO;
 import com.codigoCerto.tarefas.services.LoginService;
 import com.codigoCerto.tarefas.services.UserService;
@@ -29,7 +30,7 @@ public class LoginController {
     private UserService userService;
 
     @PostMapping
-    public ResponseEntity<ResponseApiMessageStatus> login(@RequestBody LoginDTO userDTO){
+    public ResponseEntity<ResponseTokenDTO> login(@RequestBody LoginDTO userDTO){
         try{
             Boolean existsUser = userService.authenticateUser(userDTO);
             if(!existsUser){
@@ -37,13 +38,16 @@ public class LoginController {
             }
             String tokenCreated = loginService.createToken();
             ResponseApiMessageStatus updateUserTokenById = userService.updateTokenById(userDTO.getEmail(),tokenCreated);
+            String MESSAGE_OK = updateUserTokenById.getMessage();
+            Integer STATUS_OK = updateUserTokenById.getStatus();
+            ResponseTokenDTO response = new ResponseTokenDTO(tokenCreated,MESSAGE_OK,STATUS_OK);
 
-            return ResponseEntity.ok(updateUserTokenById);
+            return ResponseEntity.ok(response);
         }catch (Exception e){
             String MESSAGE_FAILED = "Houve alguma falha ao autenticar usuário: "+e;
             Integer STATUS_FAILED = 400;
 
-            ResponseApiMessageStatus response = new ResponseApiMessageStatus(MESSAGE_FAILED, STATUS_FAILED);
+            ResponseTokenDTO response = new ResponseTokenDTO(null,MESSAGE_FAILED,STATUS_FAILED);
             return ResponseEntity.ok(response);
         }
     }
