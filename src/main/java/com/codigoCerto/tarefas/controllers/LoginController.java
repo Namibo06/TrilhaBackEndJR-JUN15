@@ -29,14 +29,22 @@ public class LoginController {
     private UserService userService;
 
     @PostMapping
-    public ResponseEntity<ResponseApiMessageStatus> login(@RequestBody UserDTO userDTO){
-        Boolean existsUser = userService.authenticateUser(userDTO.getEmail(),userDTO.getPassword());
-        if(!existsUser){
-            throw new EntityNotFoundException("Usuário não existe");
-        }
-        String tokenCreated = loginService.createToken();
-        ResponseApiMessageStatus updateUserTokenById = userService.updateTokenById(userDTO.getId(),tokenCreated);
+    public ResponseEntity<ResponseApiMessageStatus> login(@RequestBody LoginDTO userDTO){
+        try{
+            Boolean existsUser = userService.authenticateUser(userDTO);
+            if(!existsUser){
+                throw new EntityNotFoundException("Usuário não existe");
+            }
+            String tokenCreated = loginService.createToken();
+            ResponseApiMessageStatus updateUserTokenById = userService.updateTokenById(userDTO.getEmail(),tokenCreated);
 
-        return ResponseEntity.ok(updateUserTokenById);
+            return ResponseEntity.ok(updateUserTokenById);
+        }catch (Exception e){
+            String MESSAGE_FAILED = "Houve alguma falha ao autenticar usuário: "+e;
+            Integer STATUS_FAILED = 400;
+
+            ResponseApiMessageStatus response = new ResponseApiMessageStatus(MESSAGE_FAILED, STATUS_FAILED);
+            return ResponseEntity.ok(response);
+        }
     }
 }
