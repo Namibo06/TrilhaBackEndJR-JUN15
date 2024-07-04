@@ -43,4 +43,11 @@ public class TaskController {
 
         return ResponseEntity.ok(entityModel);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ResponseApiMessageStatus> updateTaskById(@PathVariable Long id,@RequestBody TaskDTO taskDTO){
+        ResponseApiMessageStatus response = service.updateTaskByIdService(id,taskDTO);
+
+        return ResponseEntity.ok(response);
+    }
 }
