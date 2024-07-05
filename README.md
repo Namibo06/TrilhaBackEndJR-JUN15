@@ -1,5 +1,5 @@
 ## Passo a passo para ter acesso ao projeto
-#### ● Abra o seu GitHub
+#### - **Abra o seu GitHub**
 #### ● Pesquise por Namibo06
 #### ● Vá em "Repositories" e escolha o projeto "TrilhaBackEndJR-JUN15"
 #### ● Clique no botão "<> Code",escolha entre HTTPS,SSH e GitHub CLI
@@ -18,10 +18,20 @@
 
 ### Simplesmente um CRUD (CREATE-READ-UPDATE-DELETE),como é uma API,não tem sua interface,porém mesmo sem uma interface através de endpoint's pode-se ser testada,seja através de testes dentro do sistema (Exemplo: Testes Unitários) ou testes externos (Exemplo: Insomnia)
 ### Tecnologias utilizadas:
-#### ● Back-end: SpringBoot 3.3.1
-#### ● Database: SQLite
-#### ● Host: Railway
-#### ● Dependências: Lombok,Spring JPA,ModelMapper,Hibernate Dialects,SpringBoot DevTools,Spring Validation
+#### ● SpringBoot
+#### ● SQLite
+#### ● Railway
+#### ● JUnit
+#### ● Hateoas
+#### ● Spring Security
+#### ● JWT
+#### ● Spring WebFlux
+#### ● Lombok
+#### ● Spring JPA
+#### ● ModelMapper
+#### ● Hibernate Community Dialects
+#### ● SpringBoot DevTools
+#### ● Spring Validation
 
 
 
@@ -38,18 +48,30 @@ meu-projeto/
 │   │   │           └── tarefas/
 │   │   │               ├── configs/
 │   │   │               │   └──Configs
+│   │   │               │   └──Filter
 │   │   │               ├── controllers/
+│   │   │               │   └── LoginController
+│   │   │               │   └── TaskController
 │   │   │               │   └── UserController
 │   │   │               ├── dtos/
+│   │   │               │   └── LoginDTO
 │   │   │               │   └── ResponseApiMessageStatus
 │   │   │               │   └── ResponsePasswordDTO
+│   │   │               │   └── ResponseTokenDTO
 │   │   │               │   └── ResponseUserDTO
+│   │   │               │   └── TaskDTO
 │   │   │               │   └── UserDTO
+│   │   │               ├── enums/
+│   │   │               │   └── Status
 │   │   │               ├── models/
+│   │   │               │   └── Task
 │   │   │               │   └── User
 │   │   │               ├── repositories/
+│   │   │               │   └── TaskRepository
 │   │   │               │   └── UserRepository
 │   │   │               ├── services/
+│   │   │               │   └── LoginService
+│   │   │               │   └── TaskService
 │   │   │               │   └── UserService
 │   │   │               └── TarefasApplication
 │   │   └── resources/
@@ -69,49 +91,63 @@ meu-projeto/
 
 -------------------------------------------------------------------
 ## Configs
-### ■ Configs
+### **• Configs**
 #### Utilizei esta class para receber um "@Bean" da class ModelMapper, que serve para mapeamento de entidade para DTO ou vice versa,como Models são o que vão para o banco e o que retornam deles,o que vem por meio de requisição e o que é retornado é um DTO,e por isso deve-se ser convertidos.
 
+<br><br>
 
+### **• Filter**
+#### **▪ doFilterInternal**
+##### Na classe Filter estendo de OncePerRequestFilter,por meio da herança tive que implementar o método doFilterInternal,na qual tenho como parâmetros response,request e filterChain.
+##### Inicializo um atributo do tipo String na qual pelo parâmetro request,recebo a requisição da URI,ou seja,aquele nome setado no controller,que vem logo depois do domínio padrão,logo verifico se a requisição da URI é igual a "/users" ou "/login",se for através do ```filterChain.doFilter(request,response);``` eu passo a requisição e a resposta para o próximo filtro na cadeia de filtros,e o ```return;``` paro a execução do método impedindo que qualquer linha abaixo seja executada]
+##### Tenho uma variável token que recebe um método ```findToken(request,response)``` na qual será falado um pouco abaixo,mas passa a requisição e a resposta para o próximo filtro na cadeia de filtros
+
+<br>
+
+#### **▪ findToken**
 
 -------------------------------------------------------------------
 ## Models
-### ■ Tabela User - "tb_user"
-### Atributos: 
+### **Tabela User - "tb_user"** 
+### **▪ Atributos:** 
 #### ● id - Long - Chave Primária
 #### ● username - String - Não Nulo | Tamanho variável até 20 caracteres 
 #### ● email - String - Não Nulo | Único | Tamanho variável até 120 caracteres
 #### ● password - String - Não Nulo | Único | Tamanho variável até 100 caracteres
 #### ● token - String
 
+<br>
 
-### ■ Tabela Task - "tb_task"
-### Atributos:
+### **Tabela Task - "tb_task"**
+### **▪ Atributos:**
 #### ●
 
 
 ---------------------------------------------------------------------
 ## DTO's
-### ResponseApiMessageStatus
-### Atributos
+### **ResponseApiMessageStatus**
+### **▪ Atributos**
 #### ● message - String
 #### ● status - Integer
 
+<br>
 
-### ■ ResponsePasswordDTO
-### Atributos
+### **ResponsePasswordDTO**
+### **▪ Atributos**
 #### ● password - String
 
+<br>
 
-### ■ ResponseUserDTO
-### Atributos
+### **ResponseUserDTO**
+### **▪ Atributos**
 #### ● id - Long
 #### ● username - String
 #### ● email - String
 
+<br>
 
-### ■ UserDTO
-### Atributos
+### **UserDTO**
+### **▪ Atributos**
 #### ● id - Long
 #### ● username - String
 #### ● email - String
@@ -120,18 +156,24 @@ meu-projeto/
 
 ---------------------------------------------------------------------
 ## Repositories
-### ■ UserRepository
+### **UserRepository**
 #### Contém um método ```Boolean existsByEmail(String email)``` retorna um Boolean e recebe por parâmetro um email do tipo String,ou seja se for encontrado um usuário com um email que já existe,retorna true,senão retorna false
 
 
 ----------------------------------------------------------------------
 ## Services
-### ■ UserService
-### Propriedades (utilizo a anotação Autowired para injetar as dependências)
+### **UserService**
+### **▪ Propriedades:** (utilizo a anotação Autowired para injetar as dependências)
 #### ● modelMapper (Mapeamento de entidade e DTO's)
 #### ● repository (Acessar o repositório do usuário)
 
-### Métodos
+<br><br>
+
+### **▪ Métodos:**
+
+<br>
+
+#### **▪ existsByEmailService**
 ```
 public Boolean existsByEmailService(String email){
     return repository.existsByEmail(email);
@@ -139,8 +181,9 @@ public Boolean existsByEmailService(String email){
 ``` 
 #### ↑ Retorna um Boolean se existir ou não um usuário com determinado email que é do tipo String e é passado por parâmetro.
 
+<br><br>
 
-
+#### ***▪ existsUserById***
 ```
 public boolean existsUserById(Long id){
     return repository.existsById(id);
@@ -148,8 +191,9 @@ public boolean existsUserById(Long id){
 ``` 
 #### ↑ Retorna um Boolean se existir ou não um usuário com um determinado id que é do tipo Long passado por parâmetro.
 
+<br><br>
 
-
+#### ***▪ createUserService***
 ```
 public ResponseApiMessageStatus createUserService(UserDTO userDTO){
     boolean existsByEmail = existsByEmailService(userDTO.getEmail());
@@ -172,8 +216,9 @@ public ResponseApiMessageStatus createUserService(UserDTO userDTO){
 #### ↑ É criado um atributo do tipo User que recebe um mapeamento de DTO para Entidade,é setado as propriedadesdas requisições como username,email e password,que são recuperadas através de userDTO.getNomeDaPropriedade,e chamo o método save() do JPARepository e a entidade é salva no banco de dados.
 #### ↑ É criado dois atributos,um para mensagem e outro para status,ambos para sucesso do processo e personalizados,e tem como retorno uma nova instância de ResponseApiMessageStatus,que recebe por parâmetros os atributos message e status. 
 
+<br><br>
 
-
+#### ***▪ findUserById***
 ```
 public ResponseUserDTO findUserById(Long id){
     User userModel = repository.findById(id).orElseThrow(()-> new EntityNotFoundException("ID de usuário não encontrado"));
@@ -189,8 +234,9 @@ public ResponseUserDTO findUserById(Long id){
 #### ↑ O método retorna ResponseUserDTO,sua finalidade é recuperar um usuário pelo seu id,recebe como parâmetro um id do tipo Long. Tem um atributo do tipo User que recupera um usuário pelo id do repository,e para evitar exceções do tipo NullPointerException,utilizo o método orElseThrow() para gerar uma exceção EntityNotFoundException com uma mensagem personalizada.   
 #### ↑ É criado um atributo com retorno do tipo ResponseUserDTO que inicializa uma nova instância de ResponseUserDTO vazia,através desse atributo seto as propriedades id,username e email,que  são recuperadas pelo atributo userModel e inseridas no atributo userDTO,e por fim userDTO é retornada.  
 
+<br><br>
 
-
+#### ***▪ findAll***
 ```
 public List<UserDTO> findAll(){
     List<User> userList=repository.findAll();
@@ -207,8 +253,9 @@ public List<UserDTO> findAll(){
 #### ↑ Tem dois atributos,ambos listas,o primeiro do tipo User na qual irá ser armazenado os usuários recuperados do banco através do repository eseu método findAll(),a segunda lista é do tipo UserDTO para armazenar os usuários que de entidade serão mapeados para DTO e começa como um ArrayList vazio.
 #### ↑ É realizado um for do atributo userList que será armazenado cada usuário um atributo do tipo User,dentro do bloco for,tem um atributo do tipo UserDTO,que mapea os dados de entidade para DTO,e adiciona esse atributo na lista de DTO,fora do bloco for,é retornado a lista de DTO.
 
+<br><br>
 
-
+#### ***▪ updateUserByIdService***
 ```
 public ResponseApiMessageStatus updateUserByIdService(Long id,ResponseUserDTO userDTO){
     boolean existsUser = existsUserById(id);
@@ -234,8 +281,9 @@ public ResponseApiMessageStatus updateUserByIdService(Long id,ResponseUserDTO us
 #### ↑ Tem um atributo do tipo Optional<User> que facilita o uso do map e prepara caso o retorno seja nulo,o atributo recebe um usuário pelo seu id,logo abaixo,utilizo uma expressão lambda map no atributo setando 'user' como parâmetro,através dele seto username e email,os valores são recuperados através do atributo userDTO,chamo repository,e pelo seu método save,salvo a entidade user e a retorno.
 #### ↑ Crio dois atributos personalizados,um é message do tipo String,e o outro é status do tipo Integer e retorno uma nova instância de ResponseApiMessageStatus que recebe message e status como parâmetros. 
 
+<br><br>
 
-
+#### ***▪ updatePasswordByIdService***
 ```
 public ResponseApiMessageStatus updatePasswordByIdService(Long id, ResponsePasswordDTO passwordDTO){
     boolean existsUser = existsUserById(id);
@@ -263,8 +311,9 @@ public ResponseApiMessageStatus updatePasswordByIdService(Long id, ResponsePassw
 #### ↑ Tem um atributo do tipo Optional<User> que facilita o uso do map e prepara caso o retorno seja nulo,o atributo recebe um usuário pelo seu id,logo abaixo,utilizo uma expressão lambda map no atributo setando 'user' como parâmetro,através dele seto username,email e password,os valores são recuperados através do atributo userDTO,chamo repository,e pelo seu método save,salvo a entidade user e a retorno.
 #### ↑ Crio dois atributos personalizados,um é message do tipo String,e o outro é status do tipo Integer e retorno uma nova instância de ResponseApiMessageStatus que recebe message e status como parâmetros.
 
+<br><br>
 
-
+#### ***▪ deleteUserByIdService***
 ```
 public void deleteUserByIdService(Long id){
     repository.deleteById(id);
@@ -279,6 +328,9 @@ public void deleteUserByIdService(Long id){
 #### Recebe duas anotações sob o UserController,o 'RestController' para representar um controller,o 'RequestMapping("/users")' que define uma rota até os métodos
 #### Detém uma propriedade service do tipo UserService,na qual vem a partir de injeção de dependências
 
+<br><br>
+
+#### ***▪ createUser***
 ```
 @PostMapping
 public ResponseEntity<ResponseApiMessageStatus> createUser(@RequestBody UserDTO userDTO, UriComponentsBuilder uriBuilder){
@@ -293,8 +345,9 @@ public ResponseEntity<ResponseApiMessageStatus> createUser(@RequestBody UserDTO 
 #### ↑ Logo abaixo,tem um atributo path do tipo URI,que recebe o parâmetro uriBuilder acessando o método path definindo o caminho até o id,logo após defino o id recebendo-o através do parâmetro userDTO do método buildAndExpand e depois transformo em URI.
 #### ↑ O retorno é ResponseEntity,que acessa created inserindo o atriuto path e depois acessa body inserindo o atributo response.
 
+<br><br>
 
-
+#### ***▪ getUserById***
 ```
 @GetMapping("/{id}")
 public ResponseEntity<ResponseUserDTO> getUserById(@PathVariable Long id){
@@ -306,8 +359,9 @@ public ResponseEntity<ResponseUserDTO> getUserById(@PathVariable Long id){
 #### ↑ Tem um atributo userById do tipo ResponseUserDTO que recebe da service o método findUserById passando por parâmetro o id.
 #### ↑ O retorno é ResponseEntity,que acessando ok passa o atributo userById.
 
+<br><br>
 
-
+#### ***▪ getAllUsers***
 ```
 @GetMapping
 public ResponseEntity<List<UserDTO>> getAllUsers(){
@@ -319,8 +373,9 @@ public ResponseEntity<List<UserDTO>> getAllUsers(){
 #### ↑ Tem um atributo userDTOList do tipo lista UserDTO que recebe da service pelo método findAll todos usuários.
 #### ↑ O retorno é ResponseEntity,que acessando ok,passa o atributo userDTOList.
 
+<br><br>
 
-
+#### ***▪ updateUserById***
 ```
 @PutMapping("/{id}")
 public ResponseEntity<ResponseApiMessageStatus> updateUserById(@PathVariable Long id,@RequestBody ResponseUserDTO userDTO){
@@ -333,8 +388,9 @@ public ResponseEntity<ResponseApiMessageStatus> updateUserById(@PathVariable Lon
 #### ↑ Tem um atributo response do tipo ResponseApiMessageStatus,que recebe da service,o método updateUserByIdService,com parâmetros id e userDTO.
 #### ↑ O retorno é ResponsiveEntity,que ao acessar o método ok,passa o atributo response.
 
+<br><br>
 
-
+#### ***▪ updatePasswordById***
 ```
 @PutMapping("updatePassword/{id}")
 public ResponseEntity<ResponseApiMessageStatus> updatePasswordById(@PathVariable Long id, @RequestBody ResponsePasswordDTO passwordDTO){
@@ -347,8 +403,9 @@ public ResponseEntity<ResponseApiMessageStatus> updatePasswordById(@PathVariable
 #### ↑ Tem um atributo response do tipo ResponseApiMessageStatus,que recebe da service,o método updatePasswordByIdService,com parâmetros id e passwordDTO.
 #### ↑ O retorno é ResponsiveEntity,que ao acessar o método ok,passa o atributo response.
 
+<br><br>
 
-
+#### ***▪ deleteUseryId***
 ```
 @DeleteMapping("/{id}")
 public ResponseEntity<Void> deleteUserById(@PathVariable Long id){
