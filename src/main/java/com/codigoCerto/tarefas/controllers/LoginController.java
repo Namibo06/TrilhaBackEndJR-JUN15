@@ -4,20 +4,15 @@ import com.codigoCerto.tarefas.dtos.*;
 import com.codigoCerto.tarefas.services.LoginService;
 import com.codigoCerto.tarefas.services.UserService;
 import jakarta.persistence.EntityNotFoundException;
+import org.apache.logging.log4j.util.InternalException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/login")
 public class LoginController {
-    @Autowired
-    private AuthenticationManager authenticate;
-
     @Autowired
     private LoginService loginService;
 
@@ -39,17 +34,9 @@ public class LoginController {
 
             return ResponseEntity.ok(response);
         }catch (BadCredentialsException e){
-            String MESSAGE_FAILED = "Houve alguma falha ao autenticar usuário: "+e;
-            Integer STATUS_FAILED = 400;
-
-            ResponseTokenDTO response = new ResponseTokenDTO(null,MESSAGE_FAILED,STATUS_FAILED);
-            return ResponseEntity.ok(response);
+            throw new BadCredentialsException("Houve alguma falha ao autenticar usuário: "+e);
         }catch (Exception e){
-            String MESSAGE_FAILED = "Erro interno: "+e;
-            Integer STATUS_FAILED = 500;
-
-            ResponseTokenDTO response = new ResponseTokenDTO(null,MESSAGE_FAILED,STATUS_FAILED);
-            return ResponseEntity.ok(response);
+            throw new InternalException("Erro interno: "+e);
         }
     }
 
