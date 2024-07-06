@@ -51,7 +51,7 @@ public class TaskService {
         TaskDTO taskDTO= modelMapper.map(taskModel, TaskDTO.class);
 
         return EntityModel.of(taskDTO,
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(TaskController.class).findById(id)).withSelfRel());
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(TaskController.class).findTaskById(id)).withSelfRel());
     }
 
     public ResponseApiMessageStatus updateTaskByIdService(Long id,TaskDTO taskDTO){
