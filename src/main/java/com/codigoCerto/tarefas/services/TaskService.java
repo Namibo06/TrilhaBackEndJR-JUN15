@@ -32,18 +32,6 @@ public class TaskService {
             throw new EntityNotFoundException("Usuario não encontrado");
         }
 
-        if(taskDTO.getStatus() == null ){
-            String message="Status está nulo";
-            Integer status=400;
-            return new ResponseApiMessageStatus(message,status);
-        }
-
-        if (taskDTO.getTitle() == null){
-            String message="Titulo está nulo";
-            Integer status=400;
-            return new ResponseApiMessageStatus(message,status);
-        }
-
         Task taskModel = modelMapper.map(taskDTO, Task.class);
         repository.save(taskModel);
 
