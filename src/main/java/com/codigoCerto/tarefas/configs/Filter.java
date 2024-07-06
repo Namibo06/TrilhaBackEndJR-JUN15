@@ -17,16 +17,24 @@ public class Filter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String requestURI = request.getRequestURI();
-        if("/users".equals(requestURI) || "/login".equals(requestURI)){
+        if("/users".equals(requestURI) || "/login".equals(requestURI ) || requestURI.startsWith("/swagger-ui/") ||
+                requestURI.startsWith("/v3/api-docs") || requestURI.startsWith("/favicon.ico")){
             filterChain.doFilter(request,response);
             return;
         }
 
         var token = findToken(request);
-        filterChain.doFilter(request,response);
+        if (token == null) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Token nao encontrado");
+            return;
+        }
+
+        filterChain.doFilter(request, response);
     }
 
     private String findToken(HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
         var authorization = request.getHeader("Authorization");
         if (authorization == null){
             throw new RuntimeException("Token nao encontrado");
