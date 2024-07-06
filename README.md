@@ -1,3 +1,12 @@
+## Pré-Requisitos do projeto
+#### **JRE**
+#### **JDK na versão 8+**
+#### **IDE Intellij(recomendado) ou qualquer outra IDE da sua escolha**
+#### **SQLite**
+#### **Insomnia ou Postman**
+
+
+----------------------------------------------------------------------------------------------
 ## Passo a passo para ter acesso ao projeto
 #### - **Abra o seu GitHub**
 #### ● Pesquise por Namibo06
@@ -5,7 +14,6 @@
 #### ● Clique no botão "<> Code",escolha entre HTTPS,SSH e GitHub CLI
 #### ● Seguindo exemplo do HTTPS,execute o comando abaixo no seu terminal,na pasta em que deseja que o projeto esteja
 #### ```git clone https://github.com/Namibo06/TrilhaBackEndJR-JUN15.git```
-
 
 
 -----------------------------------------------------------------------------------------------
@@ -32,11 +40,18 @@
 #### ● Hibernate Community Dialects
 #### ● SpringBoot DevTools
 #### ● Spring Validation
-
+#### ● Swagger
 
 
 -----------------------------------------------------------------------------
 ## Documentação
+
+### Documentação Swagger (link para acessar abaixo)
+#### **https://trilhabackendjr-jun15-production-e24a.up.railway.app/swagger-ui/index.html#/**
+
+
+<br>
+
 ### Estrutura do projeto:
 ```
 meu-projeto/
@@ -105,6 +120,9 @@ meu-projeto/
 <br>
 
 #### **▪ findToken**
+##### Seu retorno é uma String,e seu parâmetro é uma request do tipo HttpServletRequest
+##### Recupero do meu cabeçalho o meu token através de Authorization,e verifico se é nulo,se for lanço uma exceção com mensagem personalizada
+##### Retorno o token,retirando através do método replace,somente o "Bearer" que fica no inicio do token,e assim retorno o token
 
 -------------------------------------------------------------------
 ## Models
@@ -120,7 +138,11 @@ meu-projeto/
 
 ### **Tabela Task - "tb_task"**
 ### **▪ Atributos:**
-#### ●
+#### ● id - Long - Chave Primária
+#### ● title - String - Não Nulo | Tamanho variável até 150 caracteres
+#### ● description - String 
+#### ● status - Status - Não Nulo | Enumerated
+#### ● userId - Long | Não Nulo
 
 
 ---------------------------------------------------------------------
@@ -155,9 +177,20 @@ meu-projeto/
 #### ● token - String
 
 ---------------------------------------------------------------------
+## Enum
+### **Status**
+### **Propriedades:**
+#### ● ATIVO
+#### ● CONCLUIDO
+#### ● FECHADO
+
+
+---------------------------------------------------------------------
 ## Repositories
 ### **UserRepository**
-#### Contém um método ```Boolean existsByEmail(String email)``` retorna um Boolean e recebe por parâmetro um email do tipo String,ou seja se for encontrado um usuário com um email que já existe,retorna true,senão retorna false
+#### ```Boolean existsByEmail(String email)``` retorna um Boolean,e recebe por parâmetro um email do tipo String,ou seja se for encontrado um usuário com um email que já existe,retorna true,senão retorna false
+#### ```Optional<User> findByEmail(String email)``` retorna um Optional do Model User,e recebe por parâmetro um email do tipo String,aqui irá retornar um Usuário que será buscado por determinado email,para evitar NullPointExecption é sempre verificado se é nulo
+#### ```Boolean existsByEmailAndPassword(String email,String password)``` retorna um Boolean,e recebe por parâmetro um email do tipo String e uma password do tipo String,verifica se existe um usuário com determinado email e senha,se ecntrado retorna true,senão umm false 
 
 
 ----------------------------------------------------------------------
@@ -322,6 +355,14 @@ public void deleteUserByIdService(Long id){
 #### ↑ O método tem o tipo de retorno vazio,ou seja,sem retorno,sua finalidade é deletar um usuário pelo seu id,tem como parâmetro um id do tipo Long
 #### ↑ através do repository,acessa o tipo deleteById com o id como parâmetro
 
+<br><br><br>
+
+### **LoginService**
+
+<br><br><br>
+
+### **TaskService**
+
 ----------------------------------------------------------------------
 ## Controllers
 ### ■ UserController
@@ -416,3 +457,11 @@ public ResponseEntity<Void> deleteUserById(@PathVariable Long id){
 #### ↑ O controlador para deletar um usuário pelo id,utiliza a anotação 'DeleteMapping' definindo barra id na rota,o retorno é do tipo ResponseEntity<Void>,recebe como parâmetro id do tipo Long pela anotacao 'PathVariable'.
 #### ↑ Acessa o méotodo deleteUserByIdService da propriedade service vinda através da injeção de dependência,com id como parâmetro. 
 #### ↑ O retorno é ResponseEntity,que é sem conteúdo,como é sem conteúdo tenho que acecssar noContent() e logo após build().
+
+<br><br><br>
+
+### ■ LoginController
+
+<br><br><br>
+
+### ■ TaskController
