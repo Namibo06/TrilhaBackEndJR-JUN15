@@ -1,18 +1,24 @@
-## Pré-Requisitos do projeto
-#### **JRE**
-#### **JDK na versão 8+**
-#### **IDE Intellij(recomendado) ou qualquer outra IDE da sua escolha**
-#### **SQLite**
-#### **Insomnia ou Postman**
+## Pré-requisitos do projeto
+#### ● **JRE na versão 8 ou superior**
+#### ● **JDK na versão 8 ou superior**
+#### ● **IDE Intellij(recomendado) ou qualquer outra IDE da sua escolha**
+#### ● **SQLite**
+#### ● **Insomnia ou Postman**
 
 
 ----------------------------------------------------------------------------------------------
+## Detalhes no projeto
+### ● = Atributos
+### ▪ = Métodos
+### • = Class
+
+----------------------------------------------------------------------------------------------
 ## Passo a passo para ter acesso ao projeto
-#### - **Abra o seu GitHub**
-#### ● Pesquise por Namibo06
-#### ● Vá em "Repositories" e escolha o projeto "TrilhaBackEndJR-JUN15"
-#### ● Clique no botão "<> Code",escolha entre HTTPS,SSH e GitHub CLI
-#### ● Seguindo exemplo do HTTPS,execute o comando abaixo no seu terminal,na pasta em que deseja que o projeto esteja
+#### ● **Abra o seu GitHub**
+#### ● **Pesquise por Namibo06**
+#### ● **Vá em "Repositories" e escolha o projeto "TrilhaBackEndJR-JUN15"**
+#### ● **Clique no botão "<> Code",escolha entre HTTPS,SSH e GitHub CLI**
+#### ● **Seguindo exemplo do HTTPS,execute o comando abaixo no seu terminal,na pasta em que deseja que o projeto esteja**
 #### ```git clone https://github.com/Namibo06/TrilhaBackEndJR-JUN15.git```
 
 
@@ -114,20 +120,20 @@ meu-projeto/
 ### **• Filter**
 #### **▪ doFilterInternal**
 ##### Na classe Filter estendo de OncePerRequestFilter,por meio da herança tive que implementar o método doFilterInternal,na qual tenho como parâmetros response,request e filterChain.
-##### Inicializo um atributo do tipo String na qual pelo parâmetro request,recebo a requisição da URI,ou seja,aquele nome setado no controller,que vem logo depois do domínio padrão,logo verifico se a requisição da URI é igual a "/users" ou "/login",se for através do ```filterChain.doFilter(request,response);``` eu passo a requisição e a resposta para o próximo filtro na cadeia de filtros,e o ```return;``` paro a execução do método impedindo que qualquer linha abaixo seja executada]
-##### Tenho uma variável token que recebe um método ```findToken(request,response)``` na qual será falado um pouco abaixo,mas passa a requisição e a resposta para o próximo filtro na cadeia de filtros
+##### Inicializo um atributo do tipo String na qual pelo parâmetro request,recebo a requisição da URI,ou seja,aquele nome setado no controller,que vem logo depois do domínio padrão,logo verifico se a requisição da URI é igual a "/users" ou "/login",se for através do ```filterChain.doFilter(request,response)``` eu passo a requisição e a resposta para o próximo filtro na cadeia de filtros,e o ```return``` paro a execução do método impedindo que qualquer linha abaixo seja executada.
+##### Tenho uma variável token que recebe um método ```findToken(request,response)``` na qual será falado um pouco abaixo,mas passa a requisição e a resposta para o próximo filtro na cadeia de filtros.
 
 <br>
 
 #### **▪ findToken**
-##### Seu retorno é uma String,e seu parâmetro é uma request do tipo HttpServletRequest
-##### Recupero do meu cabeçalho o meu token através de Authorization,e verifico se é nulo,se for lanço uma exceção com mensagem personalizada
-##### Retorno o token,retirando através do método replace,somente o "Bearer" que fica no inicio do token,e assim retorno o token
+##### Seu retorno é uma String,e seu parâmetro é uma request do tipo HttpServletRequest.
+##### Recupero do meu cabeçalho o meu token através de Authorization,e verifico se é nulo,se for lanço uma exceção com mensagem personalizada.
+##### Retorno o token,retirando através do método replace,somente o "Bearer" que fica no inicio do token,e assim retorno o token.
 
 -------------------------------------------------------------------
 ## Models
-### **Tabela User - "tb_user"** 
-### **▪ Atributos:** 
+### **• Tabela User - "tb_user"** 
+### **Atributos:** 
 #### ● id - Long - Chave Primária
 #### ● username - String - Não Nulo | Tamanho variável até 20 caracteres 
 #### ● email - String - Não Nulo | Único | Tamanho variável até 120 caracteres
@@ -136,8 +142,8 @@ meu-projeto/
 
 <br>
 
-### **Tabela Task - "tb_task"**
-### **▪ Atributos:**
+### **• Tabela Task - "tb_task"**
+### **Atributos:**
 #### ● id - Long - Chave Primária
 #### ● title - String - Não Nulo | Tamanho variável até 150 caracteres
 #### ● description - String 
@@ -148,44 +154,44 @@ meu-projeto/
 ---------------------------------------------------------------------
 ## DTO's
 
-### **LoginDTO**
-### **▪ Atributos**
+### **• LoginDTO**
+### **Atributos:**
 #### ● email - String
 #### ● password - String
 
 <br>
 
-### **ResponseApiMessageStatus**
-### **▪ Atributos**
+### **• ResponseApiMessageStatus**
+### **Atributos:**
 #### ● message - String
 #### ● status - Integer
 
 <br>
 
-### **ResponsePasswordDTO**
-### **▪ Atributos**
+### **• ResponsePasswordDTO**
+### **Atributos:**
 #### ● password - String
 
 <br>
 
-### **ResponseTokenDTO**
-### **▪ Atributos**
+### **• ResponseTokenDTO**
+### **Atributos:**
 #### ● token - String
 #### ● message - String
 #### ● status - Integer
 
 <br>
 
-### **ResponseUserDTO**
-### **▪ Atributos**
+### **• ResponseUserDTO**
+### **Atributos:**
 #### ● id - Long
 #### ● username - String
 #### ● email - String
 
 <br>
 
-### **TaskDTO**
-### **▪ Atributos**
+### **• TaskDTO**
+### **Atributos:**
 #### ● id - Long
 #### ● title - String
 #### ● description - String
@@ -194,8 +200,8 @@ meu-projeto/
 
 <br>
 
-### **UserDTO**
-### **▪ Atributos**
+### **• UserDTO**
+### **Atributos:**
 #### ● id - Long
 #### ● username - String
 #### ● email - String
@@ -204,7 +210,7 @@ meu-projeto/
 
 ---------------------------------------------------------------------
 ## Enum
-### **Status**
+### **• Status**
 ### **Propriedades:**
 #### ● ATIVO
 #### ● CONCLUIDO
@@ -213,24 +219,24 @@ meu-projeto/
 
 ---------------------------------------------------------------------
 ## Repositories
-### **UserRepository**
-#### ```Boolean existsByEmail(String email)``` retorna um Boolean,e recebe por parâmetro um email do tipo String,ou seja se for encontrado um usuário com um email que já existe,retorna true,senão retorna false
-#### ```Optional<User> findByEmail(String email)``` retorna um Optional do Model User,e recebe por parâmetro um email do tipo String,aqui irá retornar um Usuário que será buscado por determinado email,para evitar NullPointExecption é sempre verificado se é nulo
-#### ```Boolean existsByEmailAndPassword(String email,String password)``` retorna um Boolean,e recebe por parâmetro um email do tipo String e uma password do tipo String,verifica se existe um usuário com determinado email e senha,se ecntrado retorna true,senão umm false 
+### **• UserRepository**
+#### ```Boolean existsByEmail(String email)``` retorna um Boolean,e recebe por parâmetro um email do tipo String,ou seja se for encontrado um usuário com um email que já existe,retorna true,senão retorna false.
+#### ```Optional<User> findByEmail(String email)``` retorna um Optional do Model User,e recebe por parâmetro um email do tipo String,aqui irá retornar um Usuário que será buscado por determinado email,para evitar NullPointExecption é sempre verificado se é nulo.
+#### ```Boolean existsByEmailAndPassword(String email,String password)``` retorna um Boolean,e recebe por parâmetro um email do tipo String e uma password do tipo String,verifica se existe um usuário com determinado email e senha,se ecntrado retorna true,senão umm false. 
 
-### **TaskRepository**
-#### Somente é utilizado métodos já criados pelo JPARepository
+### **• TaskRepository**
+#### Somente é utilizado métodos já criados pelo JPARepository.
 
 ----------------------------------------------------------------------
 ## Services
-### **UserService**
-### **▪ Propriedades:** (utilizo a anotação Autowired para injetar as dependências)
+### **• UserService**
+### **Propriedades:** (utilizo a anotação Autowired para injetar as dependências)
 #### ● modelMapper (Mapeamento de entidade e DTO's)
 #### ● repository (Acessa o repositório do usuário)
 
 <br><br>
 
-### **▪ Métodos:**
+### **Métodos:**
 
 <br>
 
@@ -273,7 +279,7 @@ public ResponseApiMessageStatus createUserService(UserDTO userDTO){
     return new ResponseApiMessageStatus(message,status);
 } 
 ``` 
-#### ↑ O método retorna um ResponseApiMessageStatus,sua finalidade é criar um usuário,recebe como parâmetro um UserDTO
+#### ↑ O método retorna um ResponseApiMessageStatus,sua finalidade é criar um usuário,recebe como parâmetro um UserDTO.
 #### ↑ É atribuido a uma variável do tipo boolean o método existsByEmailService,onde o email é recuperado através do getEmail do userDTO trazido da requisição,é verificado se existsByEmail fo igual a true,será lançada uma exceção de DataIntegrityViolationException com uma mensagem personalizada.
 #### ↑ É criado uma variável do tipo User que recebe um mapeamento de DTO para Entidade,é setado as propriedades das requisições como username,email e password,que são recuperadas através de userDTO.getNomeDaPropriedade,e chamo o método save() do JPARepository e a entidade é salva no banco de dados.
 #### ↑ É criado duas variáveis,um para message e outro para status,ambos para sucesso do processo e personalizados,e tem como retorno uma nova instância de ResponseApiMessageStatus,que recebe por argumentos os atributos message e status. 
@@ -382,18 +388,18 @@ public void deleteUserByIdService(Long id){
     repository.deleteById(id);
 }
 ```
-#### ↑ O método tem o tipo de retorno vazio,ou seja,sem retorno,sua finalidade é deletar um usuário pelo seu id,tem como parâmetro um id do tipo Long
-#### ↑ através do repository,acessa o tipo deleteById com o id como argumento
+#### ↑ O método tem o tipo de retorno vazio,ou seja,sem retorno,sua finalidade é deletar um usuário pelo seu id,tem como parâmetro um id do tipo Long.
+#### ↑ através do repository,acessa o tipo deleteById com o id como argumento.
 
 <br><br><br>
 
-### **LoginService**
-### **▪ Propriedades:** 
+### **• LoginService**
+### **Propriedades:** 
 #### Sem propriedades
 
 <br><br>
 
-### **▪ Métodos:**
+### **Métodos:**
 
 <br>
 
@@ -414,10 +420,10 @@ public String createToken(){
     }
 }
 ```
-#### ↑ Tem como retorno uma String,não possui parâmetros
-#### ↑ Possui um try/catch,na qual tenta o primeiro bloco,caso não vá,cai no catch
-#### ↑ No try,é recuperado o horário atual na variável now do tipo Date,a variável expirationDate do tipo Date,cria uma nova data pegando a hora atual de 'now' e adiciona mais 1 hora em cima,a variável algorithm é responsável por definir o tipo de assinatura do Algorithm a partir da minha secret,e abaixo retorno um token criado setando a assinatura,a data de expiração do token e o emissor do token   
-#### ↑ No catch o tipo a ser verificado é JWTCreationException,se for,tenho como variavel 'e' que irá armazenar a mensagem de erro,porém não é usada,lanço uma exceção RuntimeException com uma mensagem personalizada
+#### ↑ Tem como retorno uma String,não possui parâmetros.
+#### ↑ Possui um try/catch,na qual tenta o primeiro bloco,caso não vá,cai no catch.
+#### ↑ No try,é recuperado o horário atual na variável now do tipo Date,a variável expirationDate do tipo Date,cria uma nova data pegando a hora atual de 'now' e adiciona mais 1 hora em cima,a variável algorithm é responsável por definir o tipo de assinatura do Algorithm a partir da minha secret,e abaixo retorno um token criado setando a assinatura,a data de expiração do token e o emissor do token.   
+#### ↑ No catch o tipo a ser verificado é JWTCreationException,se for,tenho como variavel 'e' que irá armazenar a mensagem de erro,porém não é usada,lanço uma exceção RuntimeException com uma mensagem personalizada.
 
 <br>
 
@@ -439,19 +445,23 @@ public void verifyToken(String token){
         }
     }
 ```
-#### ↑ Não possui retorno,e recebe um token como parâmetro do tipo String
-#### ↑ Possui um try/catch,na qual tenta o primeiro bloco,caso não vá,cai no catch
-#### ↑ No try,é setado o algorithm da mesma forma que está na parte de criação do token,tem uma variável verifier do tipo JWTVerifier que verifica o algoritmo,o emissor e builda,logo abaixo tenho uma variável decodedJWT do tipo DecodedJTW na qual recebe a variável verifier e por um método verify,verifica se o token ainda está válido  
-#### ↑ Caso não fique no try,tenho dois catch's,o primeiro é do tipo SignatureVerificationException,e lanço uma exceção RuntimeException com mensagem personalizada com a variavel 'e' que captura o erro,e a segunda é do tipo JWTVerificationException na qual lanço uma exceção JWTVerificationException com uma mensagem personalizada com a variável 'e' qeu captura o erro do catch
+#### ↑ Não possui retorno,e recebe um token como parâmetro do tipo String.
+#### ↑ Possui um try/catch,na qual tenta o primeiro bloco,caso não vá,cai no catch.
+#### ↑ No try,é setado o algorithm da mesma forma que está na parte de criação do token,tem uma variável verifier do tipo JWTVerifier que verifica o algoritmo,o emissor e builda,logo abaixo tenho uma variável decodedJWT do tipo DecodedJTW na qual recebe a variável verifier e por um método verify,verifica se o token ainda está válido.  
+#### ↑ Caso não fique no try,tenho dois catch's,o primeiro é do tipo SignatureVerificationException,e lanço uma exceção RuntimeException com mensagem personalizada com a variavel 'e' que captura o erro,e a segunda é do tipo JWTVerificationException na qual lanço uma exceção JWTVerificationException com uma mensagem personalizada com a variável 'e' qeu captura o erro do catch.
 
 
 <br><br><br>
 
-### **TaskService**
-### **▪ Propriedades:** (utilizo a anotação Autowired para injetar as dependências)
+### **• TaskService**
+### **Propriedades:** (utilizo a anotação Autowired para injetar as dependências)
 #### ● modelMapper (Mapeamento de entidade e DTO's)
 #### ● repository (Acessa o repositório da tarefa)
 #### ● userService (Acessa o serviço do usuário)
+
+<br><br>
+
+### **Métodos:**
 
 <br>
 
@@ -471,10 +481,10 @@ public ResponseApiMessageStatus createTaskService(TaskDTO taskDTO){
     return new ResponseApiMessageStatus(message,status);
 }
 ```
-#### ↑ O retorno é do tipo ResponseApiMessageStatus e recebe por parâmetro um taskDTO do tipo TaskDTO 
-#### ↑ Tem uma variável existsUserById do tipo boolean que verifica se existe o id do usuário dentro do serviço do usuário através do método existsUserById,e verifica num if depois se retorna um false,caso retorne lança uma exceção EntityNotFoundException com uma mensagem personalizada,caso seja true,segue o fluxo sem entrar no if 
-#### ↑ Tem uma variável taskModel do tipo Task que recebe um modelMapper para fazer um mapeamento de TaskDTO para Task(Model) e salva taskModel no banco de dados,através do método save da depêndencia repository 
-#### ↑ Tem uma variável message do tipo String já inicializado,e um status do tipo Integer já inicializado,e um retorno de uma nova instância de ResponseApiMessageStatus setando a message e status
+#### ↑ O retorno é do tipo ResponseApiMessageStatus e recebe por parâmetro um taskDTO do tipo TaskDTO.
+#### ↑ Tem uma variável existsUserById do tipo boolean que verifica se existe o id do usuário dentro do serviço do usuário através do método existsUserById,e verifica num if depois se retorna um false,caso retorne lança uma exceção EntityNotFoundException com uma mensagem personalizada,caso seja true,segue o fluxo sem entrar no if. 
+#### ↑ Tem uma variável taskModel do tipo Task que recebe um modelMapper para fazer um mapeamento de TaskDTO para Task(Model) e salva taskModel no banco de dados,através do método save da depêndencia repository.
+#### ↑ Tem uma variável message do tipo String já inicializado,e um status do tipo Integer já inicializado,e um retorno de uma nova instância de ResponseApiMessageStatus setando a message e status.
 
 <br><br>
 
@@ -486,8 +496,8 @@ public Page<TaskDTO> findAllTasksService(Pageable pageable){
             .map(task -> modelMapper.map(task,TaskDTO.class));
 }
 ```
-#### ↑ O retorno é do tipo Page<TaskDTO> e recebe por parâmetro um pageable do tipo Pageable
-#### ↑ Retorno direto do repository,o método findAll que recebe por argumento o pageable,e percorre por um map,tendo como parâmetro task,fazendo um mapeamento de task para TaskDTO
+#### ↑ O retorno é do tipo Page<TaskDTO> e recebe por parâmetro um pageable do tipo Pageable.
+#### ↑ Retorno direto do repository,o método findAll que recebe por argumento o pageable,e percorre por um map,tendo como parâmetro task,fazendo um mapeamento de task para TaskDTO.
 
 <br><br>
 
@@ -501,10 +511,10 @@ public EntityModel<TaskDTO> findTaskByIdService(Long id){
             WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(TaskController.class).findById(id)).withSelfRel());
 }
 ```
-#### ↑ O retorno é do tipo EntityModel<TaskDTO> e recebe por parâmetro um di do tipo Long
-#### ↑ Tem uma variável taskModel do tipo Task,que recebe repository,acessando seu método findById com o argumento id,e para proteger de voltar uma exceção NullPointerException,logo após o findById acesso mais um método orElseThrow que é um método da classe Optional,lançando um EntityNotFoundException com uma mensagem personalizada
-#### ↑ Tem uma variável taskDTO do tipo TaskDTO que faz um mapeamento de taskModel para TaskDTO
-#### ↑ O retorno é acessando o método of de EntityModel,passando por argumento,taskDTO e é adicionado um link através de linkTo do WebMvcLinkBuilder,em ```WebMvcLinkBuilder.methodOn(TaskController.class)``` é criado um proxy para simular uma chamada ao método controlador sem realmente executá-lo, ```findById``` o proxy chama o método findById no controller passando id como argumento,não executa o método mas registra as informações para construir o link,```withSelfRel()```  adiciona o link,que é apontado para o próprio recurso
+#### ↑ O retorno é do tipo EntityModel<TaskDTO> e recebe por parâmetro um di do tipo Long.
+#### ↑ Tem uma variável taskModel do tipo Task,que recebe repository,acessando seu método findById com o argumento id,e para proteger de voltar uma exceção NullPointerException,logo após o findById acesso mais um método orElseThrow que é um método da classe Optional,lançando um EntityNotFoundException com uma mensagem personalizada.
+#### ↑ Tem uma variável taskDTO do tipo TaskDTO que faz um mapeamento de taskModel para TaskDTO.
+#### ↑ O retorno é acessando o método of de EntityModel,passando por argumento,taskDTO e é adicionado um link através de linkTo do WebMvcLinkBuilder,em ```WebMvcLinkBuilder.methodOn(TaskController.class)``` é criado um proxy para simular uma chamada ao método controlador sem realmente executá-lo, ```findById``` o proxy chama o método findById no controller passando id como argumento,não executa o método mas registra as informações para construir o link,```withSelfRel()```  adiciona o link,que é apontado para o próprio recurso.
 
 <br><br>
 
@@ -528,11 +538,11 @@ public ResponseApiMessageStatus updateTaskByIdService(Long id,TaskDTO taskDTO){
     return new ResponseApiMessageStatus(message,status);
 }
 ```
-#### ↑ O retorno é do tipo ResponseApiMessageStatus,que recebe como parâmetro id do tipo Long,e taskDTO do tipo TaskDTO
-#### ↑ Tem uma variável existsUserId do tipo boolean,que recebe userService,acessando o mmétodo existsUserById,recebendo de argumento,taskDTO acessando o userId,e depois é verificada se o retorno for false,é lançada uma exceção EntityNotFoundException com uma mensagem personalizada  
-#### ↑ Tem uma variável taskModel do tipo Task ,que recebe repository acessando o método findById,passando id como argumento,logo após acessando orElseThrow da classe Optional,para se proteger de NullPointerException
-#### ↑ setando os atributos na variável taskModel através do método acessor setter,passando como argumentos,o métodos acessores getters de taskDTO,e por último salvando atráves do método save de repository,a taskModel 
-#### ↑ Tenho duas variáveis,a primeira sendo message do tipo String e a segundo o statusdo tipo Integer,por último retorno uma nova instância de ResponseApiMessageStatus,passando por argumento,message e status 
+#### ↑ O retorno é do tipo ResponseApiMessageStatus,que recebe como parâmetro id do tipo Long,e taskDTO do tipo TaskDTO.
+#### ↑ Tem uma variável existsUserId do tipo boolean,que recebe userService,acessando o mmétodo existsUserById,recebendo de argumento,taskDTO acessando o userId,e depois é verificada se o retorno for false,é lançada uma exceção EntityNotFoundException com uma mensagem personalizada.  
+#### ↑ Tem uma variável taskModel do tipo Task ,que recebe repository acessando o método findById,passando id como argumento,logo após acessando orElseThrow da classe Optional,para se proteger de NullPointerException.
+#### ↑ setando os atributos na variável taskModel através do método acessor setter,passando como argumentos,o métodos acessores getters de taskDTO,e por último salvando atráves do método save de repository,a taskModel. 
+#### ↑ Tenho duas variáveis,a primeira sendo message do tipo String e a segundo o statusdo tipo Integer,por último retorno uma nova instância de ResponseApiMessageStatus,passando por argumento,message e status.
 
 <br><br>
 
@@ -542,17 +552,21 @@ public void deleteTaskByIdService(Long id){
     repository.deleteById(id);
 }
 ```
-#### ↑ Não tem retorno,e recebe como parâmetro id do tipo Long
-#### ↑ Acessa o método deleteById do repository,e passa como argumento o id
+#### ↑ Não tem retorno,e recebe como parâmetro id do tipo Long.
+#### ↑ Acessa o método deleteById do repository,e passa como argumento o id.
 
 
 ----------------------------------------------------------------------
 ## Controllers
-### ■ UserController
-#### Recebe duas anotações sob o UserController,o 'RestController' para representar um controller,o 'RequestMapping("/users")' que define uma rota específica inicial para acessar o controller
-#### Detém uma propriedade service do tipo UserService,na qual vem a partir de injeção de dependências
+### **• UserController**
+#### Recebe duas anotações sob o UserController,o 'RestController' para representar um controller,o 'RequestMapping("/users")' que define uma rota específica inicial para acessar o controller.
+#### Detém uma propriedade service do tipo UserService,na qual vem a partir de injeção de dependências.
 
 <br><br>
+
+### **Métodos:**
+
+<br>
 
 #### ***▪ createUser***
 ```
@@ -565,7 +579,7 @@ public ResponseEntity<ResponseApiMessageStatus> createUser(@RequestBody UserDTO 
 }
 ```
 #### ↑ O método para criar usuário,utiliza a anotação 'PostMapping',o retorno é do tipo ResponseEntity<ResponseApiMessageStatus>,recebe por parâmetro UserDTO acompanhado da anotação 'RequestBody' que diz que são requisições com corpo,e UriComponentBuilder que iremos utilizar para a determinar a path mais tarde.
-#### ↑ Tem uma variável que recebe o retorno da service createUserService do tipo ResponseApiMessageStatus,que recebe por argumento userDTO 
+#### ↑ Tem uma variável que recebe o retorno da service createUserService do tipo ResponseApiMessageStatus,que recebe por argumento userDTO.
 #### ↑ Logo abaixo,tem uma variável path do tipo URI,que recebe o parâmetro uriBuilder acessando o método path definindo o caminho até o id,logo após defino o id recebendo-o através do argumento userDTO do método buildAndExpand e depois transformo em URI.
 #### ↑ O retorno é ResponseEntity,que acessa created inserindo o atriuto path e depois acessa body inserindo a variável response.
 
@@ -643,9 +657,9 @@ public ResponseEntity<Void> deleteUserById(@PathVariable Long id){
 
 <br><br><br>
 
-### ■ LoginController
-#### Recebe duas anotações sob o LoginController,o 'RestController' para representar um controller,o 'RequestMapping("/login")' que define uma rota específica inicial para acessar o controller
-#### Detém duas propriedades,a primeira loginService do tipo LoginService,e a segunda userService do tipo UserService,na qual vem a partir de injeção de dependências
+### **• LoginController**
+#### Recebe duas anotações sob o LoginController,o 'RestController' para representar um controller,o 'RequestMapping("/login")' que define uma rota específica inicial para acessar o controller.
+#### Detém duas propriedades,a primeira loginService do tipo LoginService,e a segunda userService do tipo UserService,na qual vem a partir de injeção de dependências.
 
 <br><br>
 
@@ -672,15 +686,15 @@ public ResponseEntity<ResponseTokenDTO> login(@RequestBody LoginDTO userDTO){
 }
 ```
 #### ↑ O método login,utiliza a anotação 'PostMapping',o retorno é do tipo ResponseEntity<ResponseTokenDTO>,recebe por parâmetro userDTO do tipo LoginDTO acompanhado da anotação 'RequestBody' que diz que são requisições com corpo.
-#### ↑ Dentro do bloco try,tem seis variáveis
-#### ↑ A primeira variável é existsUser do tipo boolean,que recebe userService acessando o método authenticateUser,passando por argumento userDTO,se o retorno da variável for false,será lançada uma exceção EntityNotFoundException com uma mensagem personalizada
-#### ↑ A segunda variável é a tokenCreated do tipo String,que recebe loginService acessando o método createToken
-#### ↑ A terceira variável é a updateUserTokenById do tipo ResponseApiMessageStatus que recebe userService acessando o método updateTokenById,passando por argumento o email vindo de userDTO,e o token de tokenCreated
-#### ↑ A quarta variável é a MESSAGE_OK do tipo String que recebe updateUserTokenById,através do método acessor getter,recupera a message
-#### ↑ A quinta variável é STATUS_OK que recebe updateUserTokenById,através do método acessor getter,recupera o status
-#### ↑ A sexta é response do tipo ResponseTokenDTO na qual recebe uma nova instância de ResponseTokenDTO passando o tokenCreated,MESSAGE_OK e STATUS_OK como argumento
-#### ↑ É retornado um ResponseEntity,acessando o método ok,passando response como argumento
-#### ↑ Tem dois catch's,o primeiro é do tipo BadCredentialsException,que é lançado uma exceção do tipo BadCredentialsException,com uma mensagem personalizada junto com a variável do parâmetro,e o segundo uma Exception generalista na qual é lançada uma InternalException passando uma mensagem personalizada junto com a variável do parâmetro  
+#### ↑ Dentro do bloco try,tem seis variáveis.
+#### ↑ A primeira variável é existsUser do tipo boolean,que recebe userService acessando o método authenticateUser,passando por argumento userDTO,se o retorno da variável for false,será lançada uma exceção EntityNotFoundException com uma mensagem personalizada.
+#### ↑ A segunda variável é a tokenCreated do tipo String,que recebe loginService acessando o método createToken.
+#### ↑ A terceira variável é a updateUserTokenById do tipo ResponseApiMessageStatus que recebe userService acessando o método updateTokenById,passando por argumento o email vindo de userDTO,e o token de tokenCreated.
+#### ↑ A quarta variável é a MESSAGE_OK do tipo String que recebe updateUserTokenById,através do método acessor getter,recupera a message.
+#### ↑ A quinta variável é STATUS_OK que recebe updateUserTokenById,através do método acessor getter,recupera o status.
+#### ↑ A sexta é response do tipo ResponseTokenDTO na qual recebe uma nova instância de ResponseTokenDTO passando o tokenCreated,MESSAGE_OK e STATUS_OK como argumento.
+#### ↑ É retornado um ResponseEntity,acessando o método ok,passando response como argumento.
+#### ↑ Tem dois catch's,o primeiro é do tipo BadCredentialsException,que é lançado uma exceção do tipo BadCredentialsException,com uma mensagem personalizada junto com a variável do parâmetro,e o segundo uma Exception generalista na qual é lançada uma InternalException passando uma mensagem personalizada junto com a variável do parâmetro.  
 
 <br>
 
@@ -696,16 +710,16 @@ public ResponseEntity<ResponseApiMessageStatus> verifyToken(@PathVariable String
     return ResponseEntity.ok(response);
 }
 ```
-#### ↑ O método verifyToken,utiliza a anotação 'PostMapping',o retorno é tod tipo ResponseEntity<ResponseApiMessageStatus>,recebe por parâmetro um token do tipo String e recebida através da url pela anotação 'PathVariable'
-#### ↑ Acessa o método verifyToken do loginService,e passa como argumento o parâmetro token
-#### ↑ Tem três variáveis,message do tipo String,status do tipo Integer,e response do tipo ResponseApiMessageStatus que recebe uma nova instância de ResponseApiMessageStatus,passando message e status como argumentos
-#### ↑ O retorno é do tipo ResponseEntity,acessando o método ok,e passando a variável response como argumento 
+#### ↑ O método verifyToken,utiliza a anotação 'PostMapping',o retorno é tod tipo ResponseEntity<ResponseApiMessageStatus>,recebe por parâmetro um token do tipo String e recebida através da url pela anotação 'PathVariable'.
+#### ↑ Acessa o método verifyToken do loginService,e passa como argumento o parâmetro token.
+#### ↑ Tem três variáveis,message do tipo String,status do tipo Integer,e response do tipo ResponseApiMessageStatus que recebe uma nova instância de ResponseApiMessageStatus,passando message e status como argumentos.
+#### ↑ O retorno é do tipo ResponseEntity,acessando o método ok,e passando a variável response como argumento.
 
 <br><br><br>
 
-### ■ TaskController
-#### Recebe duas anotações sob o TaskController,o 'RestController' para representar um controller,o 'RequestMapping("/tasks")' que define uma rota específica inicial para acessar o controller
-#### Detém uma propriedade service do tipo TaskService,na qual vem a partir de injeção de dependências
+### **• TaskController**
+#### Recebe duas anotações sob o TaskController,o 'RestController' para representar um controller,o 'RequestMapping("/tasks")' que define uma rota específica inicial para acessar o controller.
+#### Detém uma propriedade service do tipo TaskService,na qual vem a partir de injeção de dependências.
 
 <br><br>
 
@@ -718,10 +732,10 @@ public ResponseEntity<ResponseApiMessageStatus> createTask(@RequestBody @Valid T
     return ResponseEntity.created(path).body(response);
 }
 ```
-#### ↑ O método createTask,utiliza a anotação 'PostMapping',o retorno é do tipo ResponseEntity<ResponseApiMessageStatus>,recebe dois parâmtros,sendo o primeiro taskDTO do tipo TaskDTO acompanhado das anotações 'RequestBody' (recuperar valores das requisições) e 'Valid' (validar conforme no DTO),e uriBuilder do tipo UriComponentsBuilder para path posteriormente
-#### ↑ Tem uma variável response do tipo ResponseApiMessageStatus,que recebe o método createTaskService,vindo da service,que passa taskDTO como argumento
-#### ↑ Tem uma variável path do tipo URI,que recebe o parâmetro uriBuilder,e acessa seu método path passando um caminho como argumento,acessando o método buildAndExpand passando como parâmetro o id vindo de taskDTO,e por último é transformado em URI através do método toUri
-#### ↑ O retorno  é do ResponseEntity,acessando o método created passando como argumento a variável path,depois acessa o método body passando a variável response como argumento
+#### ↑ O método createTask,utiliza a anotação 'PostMapping',o retorno é do tipo ResponseEntity<ResponseApiMessageStatus>,recebe dois parâmtros,sendo o primeiro taskDTO do tipo TaskDTO acompanhado das anotações 'RequestBody' (recuperar valores das requisições) e 'Valid' (validar conforme no DTO),e uriBuilder do tipo UriComponentsBuilder para path posteriormente.
+#### ↑ Tem uma variável response do tipo ResponseApiMessageStatus,que recebe o método createTaskService,vindo da service,que passa taskDTO como argumento.
+#### ↑ Tem uma variável path do tipo URI,que recebe o parâmetro uriBuilder,e acessa seu método path passando um caminho como argumento,acessando o método buildAndExpand passando como parâmetro o id vindo de taskDTO,e por último é transformado em URI através do método toUri.
+#### ↑ O retorno  é do ResponseEntity,acessando o método created passando como argumento a variável path,depois acessa o método body passando a variável response como argumento.
 
 <br><br>
 
@@ -733,9 +747,9 @@ public ResponseEntity<Page<TaskDTO>> findAllTasks(@PageableDefault(size = 15) Pa
     return ResponseEntity.ok(pageableTasks);
 }
 ```
-#### ↑ O método findAllTasks,utiliza a anotação 'GetMapping',o retorno é do tipo ResponseEntity<Page<TaskDTO>>,recebe um parâmetro,um pageable do tipo Pageable,ainda com a anotação 'PageableDefault' setando o tamanho em 15,ou seja,o retorno é limitado até 15 registros
-#### ↑ Tem uma variável pageableTasks do tipo Page<TaskDTO>,que recebe findAllTaskService do service,com pageable como argumento
-#### ↑ O retorno é ResponseEntity,acessando o método ok,passando como argumento pageableTasks
+#### ↑ O método findAllTasks,utiliza a anotação 'GetMapping',o retorno é do tipo ResponseEntity<Page<TaskDTO>>,recebe um parâmetro,um pageable do tipo Pageable,ainda com a anotação 'PageableDefault' setando o tamanho em 15,ou seja,o retorno é limitado até 15 registros.
+#### ↑ Tem uma variável pageableTasks do tipo Page<TaskDTO>,que recebe findAllTaskService do service,com pageable como argumento.
+#### ↑ O retorno é ResponseEntity,acessando o método ok,passando como argumento pageableTasks.
 
 <br><br>
 
@@ -747,9 +761,9 @@ public ResponseEntity<EntityModel<TaskDTO>> findTaskById(@PathVariable Long id) 
     return ResponseEntity.ok(entityModel);
 }
 ```
-#### ↑ O método findTaskById,utiliza a anotação 'GetMapping',o retorno é do tipo ResponseEntity<EntityModel<TaskDTO>>,recebe um parâmetro,um id do tipo Long e uma anotação 'PathVariable' na qual espera um id na url 
-#### ↑ Tem uma variável entityModel do tipo EntityModel<TaskDTO>,que recebe findTaskByIdService de service,e passa id como argumento
-#### ↑ O retorno é ResponseEntity,que acessa o método ok,e passa entityModel como argumento
+#### ↑ O método findTaskById,utiliza a anotação 'GetMapping',o retorno é do tipo ResponseEntity<EntityModel<TaskDTO>>,recebe um parâmetro,um id do tipo Long e uma anotação 'PathVariable' na qual espera um id na url. 
+#### ↑ Tem uma variável entityModel do tipo EntityModel<TaskDTO>,que recebe findTaskByIdService de service,e passa id como argumento.
+#### ↑ O retorno é ResponseEntity,que acessa o método ok,e passa entityModel como argumento.
 
 <br><br>
 
@@ -761,9 +775,9 @@ public ResponseEntity<ResponseApiMessageStatus> updateTaskById(@PathVariable Lon
     return ResponseEntity.ok(response);
 }
 ```
-#### ↑ O método updateTaskById,utiliza a anotação 'PutMapping',o retorno é do tipo ResponseEntity<ResponseApiMessageStatus>,recebe dois parâmetros,o primeiro sendo um id do tipo Long e uma anotação 'PathVariable' na qual espera um id na url, e o segundo um taskDTO do tipo TaskDTO junto da anotação 'RequestBody' para receber os valores das requisições
-#### ↑ Tem uma variável response do tipo ResponseApiMessageStatus,que recebe updateTaskByIdService da service,e passa id e taskDTO como argumentos
-#### ↑ O retorno é ResponseEntity,que acessa o método ok,e passa response como argumento
+#### ↑ O método updateTaskById,utiliza a anotação 'PutMapping',o retorno é do tipo ResponseEntity<ResponseApiMessageStatus>,recebe dois parâmetros,o primeiro sendo um id do tipo Long e uma anotação 'PathVariable' na qual espera um id na url, e o segundo um taskDTO do tipo TaskDTO junto da anotação 'RequestBody' para receber os valores das requisições.
+#### ↑ Tem uma variável response do tipo ResponseApiMessageStatus,que recebe updateTaskByIdService da service,e passa id e taskDTO como argumentos.
+#### ↑ O retorno é ResponseEntity,que acessa o método ok,e passa response como argumento.
 
 <br><br>
 
@@ -775,9 +789,9 @@ public ResponseEntity<Void> deleteTaskById(@PathVariable Long id){
     return ResponseEntity.noContent().build();
 }
 ```
-#### ↑ O método deleteTaskById,utiliza a anotação 'DeleteMapping',o retorno é do tipo ResponseEntity<Void>,recebe um parâmetro,sendo ele um id do tipo Long e uma anotação 'PathVariable' na qual espera um id na url
-#### ↑ Acessa deleteTaskByIdService da service,e passa id como argumento 
-#### ↑ O retorno é ResponseEntity,que acessa noContent e depois um build
+#### ↑ O método deleteTaskById,utiliza a anotação 'DeleteMapping',o retorno é do tipo ResponseEntity<Void>,recebe um parâmetro,sendo ele um id do tipo Long e uma anotação 'PathVariable' na qual espera um id na url.
+#### ↑ Acessa deleteTaskByIdService da service,e passa id como argumento.
+#### ↑ O retorno é ResponseEntity,que acessa noContent e depois um build.
 
 --------------------------------------------------------------------------------------
 
