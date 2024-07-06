@@ -5,7 +5,6 @@ import com.codigoCerto.tarefas.dtos.TaskDTO;
 import com.codigoCerto.tarefas.services.TaskService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -38,7 +37,7 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EntityModel<TaskDTO>> findById(@PathVariable Long id) {
+    public ResponseEntity<EntityModel<TaskDTO>> findTaskById(@PathVariable Long id) {
         EntityModel<TaskDTO> entityModel = service.findTaskByIdService(id);
 
         return ResponseEntity.ok(entityModel);
