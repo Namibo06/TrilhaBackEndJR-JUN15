@@ -549,7 +549,7 @@ public void deleteTaskByIdService(Long id){
 ----------------------------------------------------------------------
 ## Controllers
 ### ■ UserController
-#### Recebe duas anotações sob o UserController,o 'RestController' para representar um controller,o 'RequestMapping("/users")' que define uma rota específica
+#### Recebe duas anotações sob o UserController,o 'RestController' para representar um controller,o 'RequestMapping("/users")' que define uma rota específica inicial para acessar o controller
 #### Detém uma propriedade service do tipo UserService,na qual vem a partir de injeção de dependências
 
 <br><br>
@@ -644,7 +644,7 @@ public ResponseEntity<Void> deleteUserById(@PathVariable Long id){
 <br><br><br>
 
 ### ■ LoginController
-#### Recebe duas anotações sob o LoginController,o 'RestController' para representar um controller,o 'RequestMapping("/login")' que define uma rota específica
+#### Recebe duas anotações sob o LoginController,o 'RestController' para representar um controller,o 'RequestMapping("/login")' que define uma rota específica inicial para acessar o controller
 #### Detém duas propriedades,a primeira loginService do tipo LoginService,e a segunda userService do tipo UserService,na qual vem a partir de injeção de dependências
 
 <br><br>
@@ -672,15 +672,112 @@ public ResponseEntity<ResponseTokenDTO> login(@RequestBody LoginDTO userDTO){
 }
 ```
 #### ↑ O método login,utiliza a anotação 'PostMapping',o retorno é do tipo ResponseEntity<ResponseTokenDTO>,recebe por parâmetro userDTO do tipo LoginDTO acompanhado da anotação 'RequestBody' que diz que são requisições com corpo.
-#### ↑ Dentro do bloco try,tem seis variáveis,a primeira é existsUser do tipo boolean,que recebe userService acessando o método authenticateUser,passando por argumento userDTO,se o retorno da variável for false,será lançada uma exceção EntityNotFoundException com uma mensagem personalizada,a segunda é a tokenCreated do tipo String,que recebe loginService acessando o método createToken,a terceira é a updateUserTokenById do tipo ResponseApiMessageStatus que recebe userService acessando o método updateTokenById,passando por argumento o email vindo de userDTO,e o token de tokenCreated,a quarta é a MESSAGE_OK do tipo String que recebe updateUserTokenById,através do método acessor getter,recupera a message,a quinta é STATUS_OK que recebe updateUserTokenById,através do método acessor getter,recupera o status,a sexta é response do tipo ResponseTokenDTO na qual recebe uma nova instância de ResponseTokenDTO passando o tokenCreated,MESSAGE_OK e STATUS_OK como argumento
+#### ↑ Dentro do bloco try,tem seis variáveis
+#### ↑ A primeira variável é existsUser do tipo boolean,que recebe userService acessando o método authenticateUser,passando por argumento userDTO,se o retorno da variável for false,será lançada uma exceção EntityNotFoundException com uma mensagem personalizada
+#### ↑ A segunda variável é a tokenCreated do tipo String,que recebe loginService acessando o método createToken
+#### ↑ A terceira variável é a updateUserTokenById do tipo ResponseApiMessageStatus que recebe userService acessando o método updateTokenById,passando por argumento o email vindo de userDTO,e o token de tokenCreated
+#### ↑ A quarta variável é a MESSAGE_OK do tipo String que recebe updateUserTokenById,através do método acessor getter,recupera a message
+#### ↑ A quinta variável é STATUS_OK que recebe updateUserTokenById,através do método acessor getter,recupera o status
+#### ↑ A sexta é response do tipo ResponseTokenDTO na qual recebe uma nova instância de ResponseTokenDTO passando o tokenCreated,MESSAGE_OK e STATUS_OK como argumento
 #### ↑ É retornado um ResponseEntity,acessando o método ok,passando response como argumento
 #### ↑ Tem dois catch's,o primeiro é do tipo BadCredentialsException,que é lançado uma exceção do tipo BadCredentialsException,com uma mensagem personalizada junto com a variável do parâmetro,e o segundo uma Exception generalista na qual é lançada uma InternalException passando uma mensagem personalizada junto com a variável do parâmetro  
 
 <br>
 
+#### ***▪ verifyToken***
+```
+public ResponseEntity<ResponseApiMessageStatus> verifyToken(@PathVariable String token){
+    loginService.verifyToken(token);
+
+    String message="Token verificado com sucesso!";
+    Integer status = 200;
+    ResponseApiMessageStatus response = new ResponseApiMessageStatus(message,status);
+
+    return ResponseEntity.ok(response);
+}
+```
+#### ↑ O método verifyToken,utiliza a anotação 'PostMapping',o retorno é tod tipo ResponseEntity<ResponseApiMessageStatus>,recebe por parâmetro um token do tipo String e recebida através da url pela anotação 'PathVariable'
+#### ↑ Acessa o método verifyToken do loginService,e passa como argumento o parâmetro token
+#### ↑ Tem três variáveis,message do tipo String,status do tipo Integer,e response do tipo ResponseApiMessageStatus que recebe uma nova instância de ResponseApiMessageStatus,passando message e status como argumentos
+#### ↑ O retorno é do tipo ResponseEntity,acessando o método ok,e passando a variável response como argumento 
+
 <br><br><br>
 
 ### ■ TaskController
+#### Recebe duas anotações sob o TaskController,o 'RestController' para representar um controller,o 'RequestMapping("/tasks")' que define uma rota específica inicial para acessar o controller
+#### Detém uma propriedade service do tipo TaskService,na qual vem a partir de injeção de dependências
+
+<br><br>
+
+#### ***▪ createTask***
+```
+public ResponseEntity<ResponseApiMessageStatus> createTask(@RequestBody @Valid TaskDTO taskDTO, UriComponentsBuilder uriBuilder){
+    ResponseApiMessageStatus response = service.createTaskService(taskDTO);
+    URI path = uriBuilder.path("/tasks/{id}").buildAndExpand(taskDTO.getId()).toUri();
+
+    return ResponseEntity.created(path).body(response);
+}
+```
+#### ↑ O método createTask,utiliza a anotação 'PostMapping',o retorno é do tipo ResponseEntity<ResponseApiMessageStatus>,recebe dois parâmtros,sendo o primeiro taskDTO do tipo TaskDTO acompanhado das anotações 'RequestBody' (recuperar valores das requisições) e 'Valid' (validar conforme no DTO),e uriBuilder do tipo UriComponentsBuilder para path posteriormente
+#### ↑ Tem uma variável response do tipo ResponseApiMessageStatus,que recebe o método createTaskService,vindo da service,que passa taskDTO como argumento
+#### ↑ Tem uma variável path do tipo URI,que recebe o parâmetro uriBuilder,e acessa seu método path passando um caminho como argumento,acessando o método buildAndExpand passando como parâmetro o id vindo de taskDTO,e por último é transformado em URI através do método toUri
+#### ↑ O retorno  é do ResponseEntity,acessando o método created passando como argumento a variável path,depois acessa o método body passando a variável response como argumento
+
+<br><br>
+
+#### ***▪ findAllTasks***
+```
+public ResponseEntity<Page<TaskDTO>> findAllTasks(@PageableDefault(size = 15) Pageable pageable){
+    Page<TaskDTO> pageableTasks =  service.findAllTasksService(pageable);
+
+    return ResponseEntity.ok(pageableTasks);
+}
+```
+#### ↑ O método findAllTasks,utiliza a anotação 'GetMapping',o retorno é do tipo ResponseEntity<Page<TaskDTO>>,recebe um parâmetro,um pageable do tipo Pageable,ainda com a anotação 'PageableDefault' setando o tamanho em 15,ou seja,o retorno é limitado até 15 registros
+#### ↑ Tem uma variável pageableTasks do tipo Page<TaskDTO>,que recebe findAllTaskService do service,com pageable como argumento
+#### ↑ O retorno é ResponseEntity,acessando o método ok,passando como argumento pageableTasks
+
+<br><br>
+
+#### ***▪ findTaskById***
+```
+public ResponseEntity<EntityModel<TaskDTO>> findTaskById(@PathVariable Long id) {
+    EntityModel<TaskDTO> entityModel = service.findTaskByIdService(id);
+
+    return ResponseEntity.ok(entityModel);
+}
+```
+#### ↑ O método findTaskById,utiliza a anotação 'GetMapping',o retorno é do tipo ResponseEntity<EntityModel<TaskDTO>>,recebe um parâmetro,um id do tipo Long e uma anotação 'PathVariable' na qual espera um id na url 
+#### ↑ Tem uma variável entityModel do tipo EntityModel<TaskDTO>,que recebe findTaskByIdService de service,e passa id como argumento
+#### ↑ O retorno é ResponseEntity,que acessa o método ok,e passa entityModel como argumento
+
+<br><br>
+
+#### ***▪ updateTaskById***
+```
+public ResponseEntity<ResponseApiMessageStatus> updateTaskById(@PathVariable Long id,@RequestBody TaskDTO taskDTO){
+    ResponseApiMessageStatus response = service.updateTaskByIdService(id,taskDTO);
+
+    return ResponseEntity.ok(response);
+}
+```
+#### ↑ O método updateTaskById,utiliza a anotação 'PutMapping',o retorno é do tipo ResponseEntity<ResponseApiMessageStatus>,recebe dois parâmetros,o primeiro sendo um id do tipo Long e uma anotação 'PathVariable' na qual espera um id na url, e o segundo um taskDTO do tipo TaskDTO junto da anotação 'RequestBody' para receber os valores das requisições
+#### ↑ Tem uma variável response do tipo ResponseApiMessageStatus,que recebe updateTaskByIdService da service,e passa id e taskDTO como argumentos
+#### ↑ O retorno é ResponseEntity,que acessa o método ok,e passa response como argumento
+
+<br><br>
+
+#### ***▪ deleteTaskById***
+```
+public ResponseEntity<Void> deleteTaskById(@PathVariable Long id){
+    service.deleteTaskByIdService(id);
+
+    return ResponseEntity.noContent().build();
+}
+```
+#### ↑ O método deleteTaskById,utiliza a anotação 'DeleteMapping',o retorno é do tipo ResponseEntity<Void>,recebe um parâmetro,sendo ele um id do tipo Long e uma anotação 'PathVariable' na qual espera um id na url
+#### ↑ Acessa deleteTaskByIdService da service,e passa id como argumento 
+#### ↑ O retorno é ResponseEntity,que acessa noContent e depois um build
 
 --------------------------------------------------------------------------------------
 
