@@ -34,7 +34,6 @@ public class Filter extends OncePerRequestFilter {
     }
 
     private String findToken(HttpServletRequest request) {
-        String requestURI = request.getRequestURI();
         var authorization = request.getHeader("Authorization");
         if (authorization == null){
             throw new RuntimeException("Token nao encontrado");
