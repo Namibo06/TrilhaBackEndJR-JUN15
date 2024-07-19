@@ -31,8 +31,7 @@ public class UserService {
     @Autowired
     private PasswordEncoder encoder;
 
-    public ResponseApiMessageStatus createUserService(UserDTO userDTO){
-        System.out.println("userDTO:"+userDTO);
+    public User createUserService(UserDTO userDTO){
         boolean existsByEmail = existsByEmailService(userDTO.getEmail());
         if (existsByEmail){
             throw new DataIntegrityViolationException("Email já existe,tente outro por favor");
@@ -41,9 +40,7 @@ public class UserService {
         User userModel = modelMapper.map(userDTO, User.class);
         repository.save(userModel);
 
-        String message = "Usuário criado com sucesso!";
-        Integer status = 201;
-        return new ResponseApiMessageStatus(message,status);
+        return userModel;
     }
 
     public ResponseUserDTO findUserById(Long id){
