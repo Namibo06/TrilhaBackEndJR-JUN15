@@ -24,6 +24,7 @@ public class UserController {
 
     @PostMapping("/createUser")
     public ResponseEntity<ResponseApiMessageStatus> createUser(@RequestBody UserDTO userDTO, UriComponentsBuilder uriBuilder){
+        System.out.println("Controller:"+userDTO);
         ResponseApiMessageStatus response = service.createUserService(userDTO);
         System.out.println("id:"+userDTO.getId());
         URI path = uriBuilder.path("/users/{id}").buildAndExpand(userDTO.getId()).toUri();
@@ -37,7 +38,7 @@ public class UserController {
         return ResponseEntity.ok(userById);
     }
 
-    @GetMapping
+    @GetMapping("/getAllUsers")
     public ResponseEntity<Page<UserDTO>> getAllUsers(@PageableDefault(size = 15) Pageable pageable){
         Page<UserDTO> userDTOList = service.findAll(pageable);
         return ResponseEntity.ok(userDTOList);
