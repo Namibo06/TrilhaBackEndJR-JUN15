@@ -38,6 +38,7 @@ public class UserService {
         }
 
         User userModel = modelMapper.map(userDTO, User.class);
+        userModel.setPassword(encoder.encode(userDTO.getPassword()));
         repository.save(userModel);
 
         return userModel;
