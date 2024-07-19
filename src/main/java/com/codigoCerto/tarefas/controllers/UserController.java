@@ -20,7 +20,7 @@ public class UserController {
     @Autowired
     private UserService service;
 
-    @PostMapping
+    @PostMapping("/createUser")
     public ResponseEntity<ResponseApiMessageStatus> createUser(@RequestBody CreateUserDTO userDTO, UriComponentsBuilder uriBuilder){
         User user = service.createUserService(userDTO);
         Long createdUserId = user.getId();
