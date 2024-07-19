@@ -31,7 +31,7 @@ public class UserService {
     @Autowired
     private PasswordEncoder encoder;
 
-    public User createUserService(CreateUserDTO userDTO){
+    public ResponseApiMessageStatus createUserService(UserDTO userDTO){
         boolean existsByEmail = existsByEmailService(userDTO.getEmail());
         if (existsByEmail){
             throw new DataIntegrityViolationException("Email já existe,tente outro por favor");
@@ -43,7 +43,9 @@ public class UserService {
         userModel.setPassword(encoder.encode(userDTO.getPassword()));
         repository.save(userModel);
 
-        return userModel;
+        String message = "Usuário criado com sucesso!";
+        Integer status = 201;
+        return new ResponseApiMessageStatus(message,status);
     }
 
     public ResponseUserDTO findUserById(Long id){
@@ -102,12 +104,6 @@ public class UserService {
     }
 
     public void deleteUserByIdService(Long id){
-        boolean existsUser = repository.existsById(id);
-
-        if (!existsUser){
-            throw new EntityNotFoundException("Usuário não encontrado");
-        }
-
         repository.deleteById(id);
     }
 
