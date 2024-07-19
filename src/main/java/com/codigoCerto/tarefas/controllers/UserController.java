@@ -22,7 +22,7 @@ public class UserController {
     @Autowired
     private UserService service;
 
-    @PostMapping("createUser")
+    @PostMapping("createUserEnd")
     public ResponseEntity<ResponseApiMessageStatus> createUser(@RequestBody UserDTO userDTO, UriComponentsBuilder uriBuilder){
         ResponseApiMessageStatus response = service.createUserService(userDTO);
         URI path = uriBuilder.path("/users/{id}").buildAndExpand(userDTO.getId()).toUri();
