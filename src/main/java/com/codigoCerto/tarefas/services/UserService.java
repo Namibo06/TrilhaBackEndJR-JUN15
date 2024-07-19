@@ -31,7 +31,7 @@ public class UserService {
     @Autowired
     private PasswordEncoder encoder;
 
-    public ResponseApiMessageStatus createUserService(UserDTO userDTO){
+    public User createUserService(UserDTO userDTO){
         System.out.println("userDTO:"+userDTO);
         boolean existsByEmail = existsByEmailService(userDTO.getEmail());
         if (existsByEmail){
@@ -44,9 +44,7 @@ public class UserService {
         userModel.setPassword(encoder.encode(userDTO.getPassword()));
         repository.save(userModel);
 
-        String message = "Usuário criado com sucesso!";
-        Integer status = 201;
-        return new ResponseApiMessageStatus(message,status);
+        return userModel;
     }
 
     public ResponseUserDTO findUserById(Long id){
