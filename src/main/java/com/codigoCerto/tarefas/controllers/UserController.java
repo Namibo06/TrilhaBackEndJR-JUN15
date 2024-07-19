@@ -1,6 +1,7 @@
 package com.codigoCerto.tarefas.controllers;
 
 import com.codigoCerto.tarefas.dtos.*;
+import com.codigoCerto.tarefas.models.User;
 import com.codigoCerto.tarefas.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,8 +22,13 @@ public class UserController {
 
     @PostMapping("/createUser")
     public ResponseEntity<ResponseApiMessageStatus> createUser(@RequestBody CreateUserDTO userDTO, UriComponentsBuilder uriBuilder){
-        ResponseApiMessageStatus response = service.createUserService(userDTO);
-        URI path = uriBuilder.path("/users/createUser/{id}").buildAndExpand(userDTO.getId()).toUri();
+        User user = service.createUserService(userDTO);
+        Long createdUserId = user.getId();
+        URI path = uriBuilder.path("/users/{id}").buildAndExpand(createdUserId).toUri();
+
+        String message = "Usuário criado com sucesso!";
+        Integer status = 201;
+        ResponseApiMessageStatus response=new ResponseApiMessageStatus(message,status);
 
         return ResponseEntity.created(path).body(response);
     }
