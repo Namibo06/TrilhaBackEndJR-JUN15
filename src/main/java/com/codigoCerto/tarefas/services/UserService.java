@@ -1,6 +1,7 @@
 package com.codigoCerto.tarefas.services;
 
 import com.codigoCerto.tarefas.dtos.*;
+import com.codigoCerto.tarefas.exceptions.UserNotFoundException;
 import com.codigoCerto.tarefas.models.User;
 import com.codigoCerto.tarefas.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -45,7 +46,7 @@ public class UserService {
     }
 
     public ResponseUserDTO findUserById(Long id){
-        User userModel = repository.findById(id).orElseThrow(()-> new EntityNotFoundException("ID de usuário não encontrado"));
+        User userModel = repository.findById(id).orElseThrow(UserNotFoundException::new);
         ResponseUserDTO userDTO = new ResponseUserDTO();
         userDTO.setId(userModel.getId());
         userDTO.setUsername(userModel.getUsername());
