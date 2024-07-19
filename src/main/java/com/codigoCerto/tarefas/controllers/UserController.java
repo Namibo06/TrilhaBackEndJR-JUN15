@@ -33,7 +33,7 @@ public class UserController {
         return ResponseEntity.ok(userById);
     }
 
-    @GetMapping
+    @GetMapping("/getAllUsers")
     public ResponseEntity<Page<UserDTO>> getAllUsers(@PageableDefault(size = 15) Pageable pageable){
         Page<UserDTO> userDTOList = service.findAll(pageable);
         return ResponseEntity.ok(userDTOList);
