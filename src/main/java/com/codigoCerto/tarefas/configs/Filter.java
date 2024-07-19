@@ -4,6 +4,9 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -14,28 +17,16 @@ public class Filter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String requestURI = request.getRequestURI();
-        String method = request.getMethod();
-        System.out.println("Request URI: " + requestURI + " | HTTP Method: " + method);
-
-        if (("/users".equals(requestURI) && "POST".equalsIgnoreCase(method)) ||
-                "/login".equals(requestURI) ||
-                requestURI.startsWith("/swagger-ui/") ||
-                requestURI.startsWith("/v3/api-docs") ||
-                requestURI.startsWith("/favicon.ico")) {
-            filterChain.doFilter(request, response);
+        if("/users/createUser".equals(requestURI) || "/login".equals(requestURI ) || requestURI.startsWith("/swagger-ui/") ||
+                requestURI.startsWith("/v3/api-docs") || requestURI.startsWith("/favicon.ico")){
+            filterChain.doFilter(request,response);
             return;
         }
 
-        try {
-            var token = findToken(request);
-            if (token == null || token.isEmpty()) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("Token nao encontrado");
-                return;
-            }
-        } catch (RuntimeException e) {
+        var token = findToken(request);
+        if (token == null) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write(e.getMessage());
+            response.getWriter().write("Token nao encontrado");
             return;
         }
 
@@ -44,9 +35,9 @@ public class Filter extends OncePerRequestFilter {
 
     private String findToken(HttpServletRequest request) {
         var authorization = request.getHeader("Authorization");
-        if (authorization == null || !authorization.startsWith("Bearer ")) {
+        if (authorization == null){
             throw new RuntimeException("Token nao encontrado");
         }
-        return authorization.replace("Bearer ", "").trim();
+        return  authorization.replace("Bearer","");
     }
 }
