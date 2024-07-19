@@ -26,7 +26,7 @@ public class TaskService {
     @Autowired
     private ModelMapper modelMapper;
 
-    public ResponseApiMessageStatus createTaskService(TaskDTO taskDTO){
+    public Task createTaskService(TaskDTO taskDTO){
         boolean existsUserId=userService.existsUserById(taskDTO.getUserId());
         if (!existsUserId){
             throw new EntityNotFoundException("Usuario não encontrado");
@@ -35,9 +35,7 @@ public class TaskService {
         Task taskModel = modelMapper.map(taskDTO, Task.class);
         repository.save(taskModel);
 
-        String message="Tarefa criada com sucesso";
-        Integer status=201;
-        return new ResponseApiMessageStatus(message,status);
+        return taskModel;
     }
 
     public Page<TaskDTO> findAllTasksService(Pageable pageable){
@@ -73,6 +71,12 @@ public class TaskService {
     }
 
     public void deleteTaskByIdService(Long id){
+        boolean existsTaskId = repository.existsById(id);
+
+        if(!existsTaskId){
+            throw new EntityNotFoundException("Tarefa não encontrada");
+        }
+
         repository.deleteById(id);
     }
 }
