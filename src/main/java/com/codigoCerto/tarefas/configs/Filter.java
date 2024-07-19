@@ -14,7 +14,7 @@ public class Filter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String requestURI = request.getRequestURI();
-        if("/users/createUserEnd".equals(requestURI) || "/login".equals(requestURI ) || requestURI.startsWith("/swagger-ui/") ||
+        if("/users".equals(requestURI) || "/login".equals(requestURI ) || requestURI.startsWith("/swagger-ui/") ||
                 requestURI.startsWith("/v3/api-docs") || requestURI.startsWith("/favicon.ico")){
             filterChain.doFilter(request,response);
             return;
