@@ -5,6 +5,7 @@ import com.codigoCerto.tarefas.dtos.ResponseApiMessageStatus;
 import com.codigoCerto.tarefas.dtos.TaskDTO;
 import com.codigoCerto.tarefas.dtos.UserDTO;
 import com.codigoCerto.tarefas.models.Task;
+import com.codigoCerto.tarefas.models.User;
 import com.codigoCerto.tarefas.repositories.TaskRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
@@ -14,6 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class TaskService {
@@ -73,6 +76,12 @@ public class TaskService {
     }
 
     public void deleteTaskByIdService(Long id){
+        Optional<Task> task = repository.findById(id);
+
+        if (task.isEmpty()){
+            throw new EntityNotFoundException("Tarefa não encontrada");
+        }
+
         repository.deleteById(id);
     }
 }
