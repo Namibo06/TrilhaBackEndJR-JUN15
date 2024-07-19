@@ -18,7 +18,7 @@ public class TestUser {
 
     @Test
     public void testCreateUser(){
-        CreateUserDTO userDTO = new CreateUserDTO(null,"Joca","joca@gmail.com","123");
+        CreateUserDTO userDTO = new CreateUserDTO("Joca","joca@gmail.com","123");
         //ResponseApiMessageStatus response = service.createUserService(userDTO);
         assertThrowsExactly(DataIntegrityViolationException.class,()->{
             service.createUserService(userDTO);
