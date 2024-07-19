@@ -19,8 +19,11 @@ public class Filter extends OncePerRequestFilter {
         String requestURI = request.getRequestURI();
         String method = request.getMethod();
         System.out.println("Request URI: " + requestURI + " | HTTP Method: " + method);
-        if("/users".equals(requestURI) || "/login".equals(requestURI ) || requestURI.startsWith("/swagger-ui/") ||
-                requestURI.startsWith("/v3/api-docs") || requestURI.startsWith("/favicon.ico")){
+        if("/users".equals(requestURI) && "POST".equalsIgnoreCase(method) ||
+        "/login".equals(requestURI ) ||
+                requestURI.startsWith("/swagger-ui/") ||
+                requestURI.startsWith("/v3/api-docs") ||
+                requestURI.startsWith("/favicon.ico")){
             filterChain.doFilter(request,response);
             return;
         }
