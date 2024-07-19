@@ -104,9 +104,9 @@ public class UserService {
     }
 
     public void deleteUserByIdService(Long id){
-        Optional<User> user = repository.findById(id);
+        boolean existsUser = repository.existsById(id);
 
-        if (user.isEmpty()){
+        if (!existsUser){
             throw new EntityNotFoundException("Usuário não encontrado");
         }
 
