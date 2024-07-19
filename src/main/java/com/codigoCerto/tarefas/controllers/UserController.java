@@ -25,20 +25,24 @@ public class UserController {
 
     @PostMapping("/createUser")
     public ResponseEntity<ResponseApiMessageStatus> createUser(@RequestBody UserDTO userDTO, UriComponentsBuilder uriBuilder){
-
-        try{
-            System.out.println("Controller:"+userDTO);
+        try {
+            System.out.println("Controller - Request Body: " + userDTO);
             User user = service.createUserService(userDTO);
             Long userId = user.getId();
+            System.out.println("User ID: " + userId);
+
             URI path = uriBuilder.path("/users/{id}").buildAndExpand(userId).toUri();
+            System.out.println("Created URI: " + path);
+
             String message = "Usuário criado com sucesso!";
             Integer status = 201;
-            ResponseApiMessageStatus response=new ResponseApiMessageStatus(message,status);
-            return ResponseEntity.created(path).body(response);
-        }catch (RuntimeException e){
-            throw new RuntimeException("Erro:"+e.getMessage());
-        }
+            ResponseApiMessageStatus response = new ResponseApiMessageStatus(message, status);
 
+            return ResponseEntity.created(path).body(response);
+        } catch (RuntimeException e) {
+            System.out.println("Exception: " + e.getMessage());
+            throw new RuntimeException("Erro: " + e.getMessage());
+        }
     }
 
     @GetMapping("/{id}")
