@@ -31,14 +31,12 @@ public class UserController {
             Long userId = user.getId();
             System.out.println("User ID: " + userId);
 
-            URI path = uriBuilder.path("/users/{id}").buildAndExpand(userId).toUri();
-            System.out.println("Created URI: " + path);
 
             String message = "Usuário criado com sucesso!";
             Integer status = 201;
             ResponseApiMessageStatus response = new ResponseApiMessageStatus(message, status);
 
-            return ResponseEntity.created(path).body(response);
+            return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             System.out.println("Exception: " + e.getMessage());
             throw new RuntimeException("Erro: " + e.getMessage());
