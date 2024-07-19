@@ -22,22 +22,29 @@ public class Filter extends OncePerRequestFilter {
             filterChain.doFilter(request,response);
             return;
         }
-
-        var token = findToken(request);
-        if (token == null) {
+        try {
+            var token = findToken(request);
+            if (token == null || token.isEmpty()) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Token nao encontrado");
+                return;
+            }
+        }catch (RuntimeException e){
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Token nao encontrado");
+            response.getWriter().write(e.getMessage());
             return;
         }
+
+
 
         filterChain.doFilter(request, response);
     }
 
     private String findToken(HttpServletRequest request) {
         var authorization = request.getHeader("Authorization");
-        if (authorization == null){
+        if (authorization == null || !authorization.startsWith("Bearer ")){
             throw new RuntimeException("Token nao encontrado");
         }
-        return  authorization.replace("Bearer","");
+        return  authorization.replace("Bearer","").trim();
     }
 }
