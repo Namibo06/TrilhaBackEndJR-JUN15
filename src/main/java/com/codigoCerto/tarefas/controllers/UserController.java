@@ -22,7 +22,7 @@ public class UserController {
     @PostMapping("/createUser")
     public ResponseEntity<ResponseApiMessageStatus> createUser(@RequestBody CreateUserDTO userDTO, UriComponentsBuilder uriBuilder){
         ResponseApiMessageStatus response = service.createUserService(userDTO);
-        URI path = uriBuilder.path("/users/{id}").buildAndExpand(userDTO.getId()).toUri();
+        URI path = uriBuilder.path("/users/createUser/{id}").buildAndExpand(userDTO.getId()).toUri();
 
         return ResponseEntity.created(path).body(response);
     }
