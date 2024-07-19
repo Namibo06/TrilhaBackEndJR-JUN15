@@ -1,9 +1,6 @@
 package com.codigoCerto.tarefas.controllers;
 
-import com.codigoCerto.tarefas.dtos.ResponseApiMessageStatus;
-import com.codigoCerto.tarefas.dtos.ResponsePasswordDTO;
-import com.codigoCerto.tarefas.dtos.ResponseUserDTO;
-import com.codigoCerto.tarefas.dtos.UserDTO;
+import com.codigoCerto.tarefas.dtos.*;
 import com.codigoCerto.tarefas.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,7 +20,7 @@ public class UserController {
     private UserService service;
 
     @PostMapping
-    public ResponseEntity<ResponseApiMessageStatus> createUser(@RequestBody UserDTO userDTO, UriComponentsBuilder uriBuilder){
+    public ResponseEntity<ResponseApiMessageStatus> createUser(@RequestBody CreateUserDTO userDTO, UriComponentsBuilder uriBuilder){
         ResponseApiMessageStatus response = service.createUserService(userDTO);
         URI path = uriBuilder.path("/users/{id}").buildAndExpand(userDTO.getId()).toUri();
 
