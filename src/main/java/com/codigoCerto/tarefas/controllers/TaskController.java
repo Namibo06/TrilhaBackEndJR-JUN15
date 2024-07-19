@@ -2,6 +2,7 @@ package com.codigoCerto.tarefas.controllers;
 
 import com.codigoCerto.tarefas.dtos.ResponseApiMessageStatus;
 import com.codigoCerto.tarefas.dtos.TaskDTO;
+import com.codigoCerto.tarefas.models.Task;
 import com.codigoCerto.tarefas.services.TaskService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +24,13 @@ public class TaskController {
 
     @PostMapping
     public ResponseEntity<ResponseApiMessageStatus> createTask(@RequestBody @Valid TaskDTO taskDTO, UriComponentsBuilder uriBuilder){
-        ResponseApiMessageStatus response = service.createTaskService(taskDTO);
-        URI path = uriBuilder.path("/tasks/{id}").buildAndExpand(taskDTO.getId()).toUri();
+        Task task = service.createTaskService(taskDTO);
+        Long taskId = task.getId();
+        URI path = uriBuilder.path("/tasks/{id}").buildAndExpand(taskId).toUri();
+
+        String message="Tarefa criada com sucesso";
+        Integer status=201;
+        ResponseApiMessageStatus response = new ResponseApiMessageStatus(message,status);
 
         return ResponseEntity.created(path).body(response);
     }
