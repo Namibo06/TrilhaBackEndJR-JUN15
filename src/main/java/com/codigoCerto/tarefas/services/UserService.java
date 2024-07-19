@@ -100,6 +100,12 @@ public class UserService {
     }
 
     public void deleteUserByIdService(Long id){
+        boolean existsUserId = repository.existsById(id);
+
+        if(!existsUserId){
+            throw new EntityNotFoundException("Usuário não encontrado");
+        }
+
         repository.deleteById(id);
     }
 
