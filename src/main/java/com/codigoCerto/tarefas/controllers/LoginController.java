@@ -3,6 +3,8 @@ package com.codigoCerto.tarefas.controllers;
 import com.codigoCerto.tarefas.dtos.*;
 import com.codigoCerto.tarefas.services.LoginService;
 import com.codigoCerto.tarefas.services.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.persistence.EntityNotFoundException;
 import org.apache.logging.log4j.util.InternalException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +43,7 @@ public class LoginController {
     }
 
     @PostMapping("/{token}")
+    @Operation(summary = "Secure Endpoint", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<ResponseApiMessageStatus> verifyToken(@PathVariable String token){
         loginService.verifyToken(token);
 

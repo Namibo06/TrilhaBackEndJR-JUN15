@@ -6,6 +6,8 @@ import com.codigoCerto.tarefas.dtos.ResponseUserDTO;
 import com.codigoCerto.tarefas.dtos.UserDTO;
 import com.codigoCerto.tarefas.models.User;
 import com.codigoCerto.tarefas.services.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,18 +39,21 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Secure Endpoint", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<ResponseUserDTO> getUserById(@PathVariable Long id){
         ResponseUserDTO userById = service.findUserById(id);
         return ResponseEntity.ok(userById);
     }
 
     @GetMapping
+    @Operation(summary = "Secure Endpoint", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<Page<UserDTO>> getAllUsers(@PageableDefault(size = 15) Pageable pageable){
         Page<UserDTO> userDTOList = service.findAll(pageable);
         return ResponseEntity.ok(userDTOList);
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Secure Endpoint", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<ResponseApiMessageStatus> updateUserById(@PathVariable Long id,@RequestBody ResponseUserDTO userDTO){
         ResponseApiMessageStatus response = service.updateUserByIdService(id,userDTO);
 
@@ -56,6 +61,7 @@ public class UserController {
     }
 
     @PutMapping("updatePassword/{id}")
+    @Operation(summary = "Secure Endpoint", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<ResponseApiMessageStatus> updatePasswordById(@PathVariable Long id, @RequestBody ResponsePasswordDTO passwordDTO){
         ResponseApiMessageStatus response = service.updatePasswordByIdService(id,passwordDTO);
 
@@ -63,6 +69,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Secure Endpoint", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<Void> deleteUserById(@PathVariable Long id){
         service.deleteUserByIdService(id);
         return ResponseEntity.noContent().build();

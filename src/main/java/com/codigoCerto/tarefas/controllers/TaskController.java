@@ -4,6 +4,8 @@ import com.codigoCerto.tarefas.dtos.ResponseApiMessageStatus;
 import com.codigoCerto.tarefas.dtos.TaskDTO;
 import com.codigoCerto.tarefas.models.Task;
 import com.codigoCerto.tarefas.services.TaskService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,6 +25,7 @@ public class TaskController {
     private TaskService service;
 
     @PostMapping
+    @Operation(summary = "Secure Endpoint", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<ResponseApiMessageStatus> createTask(@RequestBody @Valid TaskDTO taskDTO, UriComponentsBuilder uriBuilder){
         Task task = service.createTaskService(taskDTO);
         Long taskId = task.getId();
@@ -36,6 +39,7 @@ public class TaskController {
     }
 
     @GetMapping
+    @Operation(summary = "Secure Endpoint", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<Page<TaskDTO>> findAllTasks(@PageableDefault(size = 15) Pageable pageable){
         Page<TaskDTO> pageableTasks =  service.findAllTasksService(pageable);
 
@@ -43,6 +47,7 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Secure Endpoint", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<EntityModel<TaskDTO>> findTaskById(@PathVariable Long id) {
         EntityModel<TaskDTO> entityModel = service.findTaskByIdService(id);
 
@@ -50,6 +55,7 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Secure Endpoint", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<ResponseApiMessageStatus> updateTaskById(@PathVariable Long id,@RequestBody TaskDTO taskDTO){
         ResponseApiMessageStatus response = service.updateTaskByIdService(id,taskDTO);
 
@@ -57,6 +63,7 @@ public class TaskController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Secure Endpoint", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<Void> deleteTaskById(@PathVariable Long id){
         service.deleteTaskByIdService(id);
 
