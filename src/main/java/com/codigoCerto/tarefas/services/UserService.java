@@ -31,7 +31,7 @@ public class UserService {
     @Autowired
     private PasswordEncoder encoder;
 
-    public User createUserService(UserDTO userDTO){
+    public ResponseApiMessageStatus createUserService(UserDTO userDTO){
         System.out.println("userDTO:"+userDTO);
         boolean existsByEmail = existsByEmailService(userDTO.getEmail());
         if (existsByEmail){
@@ -39,12 +39,11 @@ public class UserService {
         }
 
         User userModel = modelMapper.map(userDTO, User.class);
-        userModel.setUsername(userDTO.getUsername());
-        userModel.setEmail(userDTO.getEmail());
-        userModel.setPassword(encoder.encode(userDTO.getPassword()));
         repository.save(userModel);
 
-        return userModel;
+        String message = "Usuário criado com sucesso!";
+        Integer status = 201;
+        return new ResponseApiMessageStatus(message,status);
     }
 
     public ResponseUserDTO findUserById(Long id){

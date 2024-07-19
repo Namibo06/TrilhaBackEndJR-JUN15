@@ -4,7 +4,6 @@ import com.codigoCerto.tarefas.dtos.ResponseApiMessageStatus;
 import com.codigoCerto.tarefas.dtos.ResponsePasswordDTO;
 import com.codigoCerto.tarefas.dtos.ResponseUserDTO;
 import com.codigoCerto.tarefas.dtos.UserDTO;
-import com.codigoCerto.tarefas.models.User;
 import com.codigoCerto.tarefas.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,22 +24,10 @@ public class UserController {
 
     @PostMapping("/createUser")
     public ResponseEntity<ResponseApiMessageStatus> createUser(@RequestBody UserDTO userDTO, UriComponentsBuilder uriBuilder){
-        try {
-            System.out.println("Controller - Request Body: " + userDTO);
-            User user = service.createUserService(userDTO);
-            Long userId = user.getId();
-            System.out.println("User ID: " + userId);
+        ResponseApiMessageStatus response = service.createUserService(userDTO);
+        URI path = uriBuilder.path("/users/{id}").buildAndExpand(userDTO.getId()).toUri();
 
-
-            String message = "Usuário criado com sucesso!";
-            Integer status = 201;
-            ResponseApiMessageStatus response = new ResponseApiMessageStatus(message, status);
-
-            return ResponseEntity.ok(response);
-        } catch (RuntimeException e) {
-            System.out.println("Exception: " + e.getMessage());
-            throw new RuntimeException("Erro: " + e.getMessage());
-        }
+        return ResponseEntity.created(path).body(response);
     }
 
     @GetMapping("/{id}")
@@ -49,7 +36,7 @@ public class UserController {
         return ResponseEntity.ok(userById);
     }
 
-    @GetMapping("/getAllUsers")
+    @GetMapping
     public ResponseEntity<Page<UserDTO>> getAllUsers(@PageableDefault(size = 15) Pageable pageable){
         Page<UserDTO> userDTOList = service.findAll(pageable);
         return ResponseEntity.ok(userDTOList);
