@@ -32,6 +32,7 @@ public class UserService {
     private PasswordEncoder encoder;
 
     public ResponseApiMessageStatus createUserService(UserDTO userDTO){
+        System.out.println("userDTO:"+userDTO);
         boolean existsByEmail = existsByEmailService(userDTO.getEmail());
         if (existsByEmail){
             throw new DataIntegrityViolationException("Email já existe,tente outro por favor");
