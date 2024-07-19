@@ -28,7 +28,7 @@ public class UserController {
 
         String message = "Usuário criado com sucesso!";
         Integer status = 201;
-        ResponseApiMessageStatus response = new ResponseApiMessageStatus(message, status);
+        ResponseApiMessageStatus response=new ResponseApiMessageStatus(message,status);
 
         return ResponseEntity.created(path).body(response);
     }
