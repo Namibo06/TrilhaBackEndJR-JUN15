@@ -26,4 +26,10 @@ public class GlobalExceptionHandler {
         ErrorResponseDTO errorResponse = new ErrorResponseDTO(ex.getMessage(), "Email já ativo no sistema");
         return new ResponseEntity<>(errorResponse,HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(TokenNotFoundException.class)
+    public ResponseEntity<ErrorResponseDTO> handleTokenNotFoundException(TokenNotFoundException ex){
+        ErrorResponseDTO errorResponse = new ErrorResponseDTO(ex.getMessage(), "Não autorizado");
+        return new ResponseEntity<>(errorResponse,HttpStatus.UNAUTHORIZED);
+    }
 }
