@@ -1,24 +1,19 @@
 package com.codigoCerto.tarefas.services;
 
 import com.codigoCerto.tarefas.dtos.*;
+import com.codigoCerto.tarefas.exceptions.CredentialsInvalidException;
+import com.codigoCerto.tarefas.exceptions.EmailAlreadyExistsException;
 import com.codigoCerto.tarefas.exceptions.UserNotFoundException;
 import com.codigoCerto.tarefas.models.User;
 import com.codigoCerto.tarefas.repositories.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -35,7 +30,7 @@ public class UserService {
     public User createUserService(UserDTO userDTO){
         boolean existsByEmail = existsByEmailService(userDTO.getEmail());
         if (existsByEmail){
-            throw new DataIntegrityViolationException("Email já existe,tente outro por favor");
+            throw new EmailAlreadyExistsException();
         }
 
         User userModel = modelMapper.map(userDTO, User.class);
@@ -46,11 +41,14 @@ public class UserService {
     }
 
     public ResponseUserDTO findUserById(Long id){
-        User userModel = repository.findById(id).orElseThrow(UserNotFoundException::new);
+        Optional<User> userModel = repository.findById(id);
+        if(userModel.isEmpty()){
+            throw new UserNotFoundException("Usuário não encontrado");
+        }
         ResponseUserDTO userDTO = new ResponseUserDTO();
-        userDTO.setId(userModel.getId());
-        userDTO.setUsername(userModel.getUsername());
-        userDTO.setEmail(userModel.getEmail());
+        userDTO.setId(userModel.get().getId());
+        userDTO.setUsername(userModel.get().getUsername());
+        userDTO.setEmail(userModel.get().getEmail());
         return userDTO;
     }
 
@@ -63,7 +61,7 @@ public class UserService {
     public ResponseApiMessageStatus updateUserByIdService(Long id,ResponseUserDTO userDTO){
         boolean existsUser = existsUserById(id);
         if(!existsUser){
-            throw new EntityNotFoundException("Usuário não encontrado");
+            throw new UserNotFoundException("Usuário não encontrado");
         }
 
         Optional<User> userModel = repository.findById(id);
@@ -82,7 +80,7 @@ public class UserService {
     public ResponseApiMessageStatus updatePasswordByIdService(Long id, ResponsePasswordDTO passwordDTO){
         boolean existsUser = existsUserById(id);
         if(!existsUser){
-            throw new EntityNotFoundException("Usuário não encontrado");
+            throw new UserNotFoundException("Usuário não encontrado");
         }
 
         Optional<User> userModel = repository.findById(id);
@@ -104,7 +102,7 @@ public class UserService {
         boolean existsUserId = repository.existsById(id);
 
         if(!existsUserId){
-            throw new EntityNotFoundException("Usuário não encontrado");
+            throw new UserNotFoundException("Usuário não encontrado");
         }
 
         repository.deleteById(id);
@@ -114,20 +112,22 @@ public class UserService {
         Optional<User> optionalUser = repository.findByEmail(loginDTO.getEmail());
         boolean existsUser = repository.existsByEmailAndPassword(loginDTO.getEmail(),loginDTO.getPassword());
 
+        if(!existsUser){
+            throw new CredentialsInvalidException("Email/Senha incorretos");
+        }
+
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
 
             boolean checkPassword = encoder.matches(loginDTO.getPassword(), user.getPassword());
-            if (!checkPassword) {
-                throw new BadCredentialsException("Senhas não batem");
-            }
+
             return true;
         }
         return false;
     }
 
     public ResponseApiMessageStatus updateTokenById(String email,String token){
-        User userModel = repository.findByEmail(email).orElseThrow(()-> new EntityNotFoundException("Usuário não encontrado"));
+        User userModel = repository.findByEmail(email).orElseThrow(()-> new UserNotFoundException("Usuário não encontrado"));
 
         userModel.setToken(token);
         repository.save(userModel);
