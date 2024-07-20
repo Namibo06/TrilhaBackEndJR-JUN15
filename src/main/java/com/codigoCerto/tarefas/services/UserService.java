@@ -108,22 +108,22 @@ public class UserService {
         repository.deleteById(id);
     }
 
-    public Boolean authenticateUser(LoginDTO loginDTO){
+    public Boolean authenticateUser(LoginDTO loginDTO) {
         Optional<User> optionalUser = repository.findByEmail(loginDTO.getEmail());
-        boolean existsUser = repository.existsByEmailAndPassword(loginDTO.getEmail(),loginDTO.getPassword());
 
-        if(!existsUser){
+        if (optionalUser.isEmpty()) {
             throw new CredentialsInvalidException("Email/Senha incorretos");
         }
 
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
+        User user = optionalUser.get();
 
-            boolean checkPassword = encoder.matches(loginDTO.getPassword(), user.getPassword());
+        boolean checkPassword = encoder.matches(loginDTO.getPassword(), user.getPassword());
 
-            return true;
+        if (!checkPassword) {
+            throw new CredentialsInvalidException("Senhas não batem");
         }
-        return false;
+
+        return true;
     }
 
     public ResponseApiMessageStatus updateTokenById(String email,String token){
