@@ -71,6 +71,10 @@ public class UserService {
 
         existingUser.setUsername(userDTO.getUsername());
         existingUser.setEmail(userDTO.getEmail());
+        if(userDTO.getEmail() == null){
+            existingUser.setEmail(existingUser.getEmail());
+        }
+
         repository.save(existingUser);
 
         String message = "Usuário atualizado com sucesso";
