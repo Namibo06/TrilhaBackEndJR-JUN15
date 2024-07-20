@@ -61,6 +61,14 @@ public class TaskService {
     }
 
     public ResponseApiMessageStatus updateTaskByIdService(Long id,TaskDTO taskDTO){
+        if(taskDTO.getTitle().length() > 150){
+            throw new ValidationException("Tamanho do titulo excedido,deve ter até 150 caracteres");
+        }
+
+        if (taskDTO.getTitle().isEmpty()){
+            throw new ValidationException("Titulo não pode ser nulo");
+        }
+
         boolean existsUserId=userService.existsUserById(taskDTO.getUserId());
 
         if (!existsUserId){
