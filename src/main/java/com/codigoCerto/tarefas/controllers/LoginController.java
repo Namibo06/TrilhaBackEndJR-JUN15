@@ -23,23 +23,15 @@ public class LoginController {
 
     @PostMapping
     public ResponseEntity<ResponseTokenDTO> login(@RequestBody LoginDTO userDTO){
-        try{
-            Boolean existsUser = userService.authenticateUser(userDTO);
-            if(!existsUser){
-                throw new EntityNotFoundException("Usuário não existe");
-            }
-            String tokenCreated = loginService.createToken();
-            ResponseApiMessageStatus updateUserTokenById = userService.updateTokenById(userDTO.getEmail(),tokenCreated);
-            String MESSAGE_OK = updateUserTokenById.getMessage();
-            Integer STATUS_OK = updateUserTokenById.getStatus();
-            ResponseTokenDTO response = new ResponseTokenDTO(tokenCreated,MESSAGE_OK,STATUS_OK);
+        Boolean existsUser = userService.authenticateUser(userDTO);
 
-            return ResponseEntity.ok(response);
-        }catch (BadCredentialsException e){
-            throw new BadCredentialsException("Houve alguma falha ao autenticar usuário: "+e);
-        }catch (Exception e){
-            throw new InternalException("Erro interno: "+e);
-        }
+        String tokenCreated = loginService.createToken();
+        ResponseApiMessageStatus updateUserTokenById = userService.updateTokenById(userDTO.getEmail(),tokenCreated);
+        String MESSAGE_OK = updateUserTokenById.getMessage();
+        Integer STATUS_OK = updateUserTokenById.getStatus();
+        ResponseTokenDTO response = new ResponseTokenDTO(tokenCreated,MESSAGE_OK,STATUS_OK);
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/{token}")
