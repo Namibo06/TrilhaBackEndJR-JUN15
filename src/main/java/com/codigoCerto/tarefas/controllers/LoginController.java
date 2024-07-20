@@ -32,6 +32,7 @@ public class LoginController {
         ResponseTokenDTO response = new ResponseTokenDTO(tokenCreated,MESSAGE_OK,STATUS_OK);
 
         return ResponseEntity.ok(response);
+
     }
 
     @PostMapping("/{token}")
