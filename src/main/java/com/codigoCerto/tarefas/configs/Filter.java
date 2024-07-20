@@ -1,5 +1,6 @@
 package com.codigoCerto.tarefas.configs;
 
+import com.codigoCerto.tarefas.exceptions.TokenNotFoundException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,7 +35,7 @@ public class Filter extends OncePerRequestFilter {
     private String findToken(HttpServletRequest request) {
         var authorization = request.getHeader("Authorization");
         if (authorization == null){
-            throw new RuntimeException("Token nao encontrado");
+            throw new TokenNotFoundException();
         }
         return  authorization.replace("Bearer","");
     }
