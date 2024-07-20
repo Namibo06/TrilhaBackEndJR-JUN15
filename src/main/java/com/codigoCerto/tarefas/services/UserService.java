@@ -3,12 +3,11 @@ package com.codigoCerto.tarefas.services;
 import com.codigoCerto.tarefas.dtos.*;
 import com.codigoCerto.tarefas.exceptions.CredentialsInvalidException;
 import com.codigoCerto.tarefas.exceptions.EmailAlreadyExistsException;
-import com.codigoCerto.tarefas.exceptions.UserNotFoundException;
+import com.codigoCerto.tarefas.exceptions.RegisterNotFoundException;
 import com.codigoCerto.tarefas.models.User;
 import com.codigoCerto.tarefas.repositories.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -43,7 +42,7 @@ public class UserService {
     public ResponseUserDTO findUserById(Long id){
         Optional<User> userModel = repository.findById(id);
         if(userModel.isEmpty()){
-            throw new UserNotFoundException("Usuário não encontrado");
+            throw new RegisterNotFoundException("Usuário não encontrado");
         }
         ResponseUserDTO userDTO = new ResponseUserDTO();
         userDTO.setUsername(userModel.get().getUsername());
@@ -60,7 +59,7 @@ public class UserService {
     public ResponseApiMessageStatus updateUserByIdService(Long id,ResponseUserDTO userDTO){
         boolean existsUser = existsUserById(id);
         if(!existsUser){
-            throw new UserNotFoundException("Usuário não encontrado");
+            throw new RegisterNotFoundException("Usuário não encontrado");
         }
 
         Optional<User> userModel = repository.findById(id);
@@ -79,7 +78,7 @@ public class UserService {
     public ResponseApiMessageStatus updatePasswordByIdService(Long id, ResponsePasswordDTO passwordDTO){
         boolean existsUser = existsUserById(id);
         if(!existsUser){
-            throw new UserNotFoundException("Usuário não encontrado");
+            throw new RegisterNotFoundException("Usuário não encontrado");
         }
 
         Optional<User> userModel = repository.findById(id);
@@ -101,7 +100,7 @@ public class UserService {
         boolean existsUserId = repository.existsById(id);
 
         if(!existsUserId){
-            throw new UserNotFoundException("Usuário não encontrado");
+            throw new RegisterNotFoundException("Usuário não encontrado");
         }
 
         repository.deleteById(id);
@@ -126,7 +125,7 @@ public class UserService {
     }
 
     public ResponseApiMessageStatus updateTokenById(String email,String token){
-        User userModel = repository.findByEmail(email).orElseThrow(()-> new UserNotFoundException("Usuário não encontrado"));
+        User userModel = repository.findByEmail(email).orElseThrow(()-> new RegisterNotFoundException("Usuário não encontrado"));
 
         userModel.setToken(token);
         repository.save(userModel);
