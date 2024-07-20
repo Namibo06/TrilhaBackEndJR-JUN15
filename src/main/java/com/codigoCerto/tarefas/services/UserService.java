@@ -57,22 +57,26 @@ public class UserService {
     }
 
     public ResponseApiMessageStatus updateUserByIdService(Long id,ResponseUserDTO userDTO){
-        boolean existsUser = existsUserById(id);
-        if(!existsUser){
+        if (!repository.existsById(id)) {
             throw new RegisterNotFoundException("Usuário não encontrado");
         }
 
-        Optional<User> userModel = repository.findById(id);
-        userModel.map(user -> {
-            user.setUsername(userDTO.getUsername());
-            user.setEmail(userDTO.getEmail());
-            repository.save(user);
-            return user;
-        });
+        User existingUser = repository.findById(id).orElseThrow(() ->
+                new RegisterNotFoundException("Usuário não encontrado"));
+
+        if (!existingUser.getEmail().equals(userDTO.getEmail()) &&
+                repository.existsByEmail(userDTO.getEmail())) {
+            throw new EmailAlreadyExistsException();
+        }
+
+        existingUser.setUsername(userDTO.getUsername());
+        existingUser.setEmail(userDTO.getEmail());
+        repository.save(existingUser);
+
         String message = "Usuário atualizado com sucesso";
         Integer status = 200;
 
-        return new ResponseApiMessageStatus(message,status);
+        return new ResponseApiMessageStatus(message, status);
     }
 
     public ResponseApiMessageStatus updatePasswordByIdService(Long id, ResponsePasswordDTO passwordDTO){
