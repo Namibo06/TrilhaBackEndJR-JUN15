@@ -4,6 +4,8 @@ import com.codigoCerto.tarefas.controllers.TaskController;
 import com.codigoCerto.tarefas.dtos.ResponseApiMessageStatus;
 import com.codigoCerto.tarefas.dtos.TaskDTO;
 import com.codigoCerto.tarefas.dtos.UserDTO;
+import com.codigoCerto.tarefas.exceptions.TaskNotFoundException;
+import com.codigoCerto.tarefas.exceptions.UserNotFoundException;
 import com.codigoCerto.tarefas.models.Task;
 import com.codigoCerto.tarefas.repositories.TaskRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -29,7 +31,7 @@ public class TaskService {
     public Task createTaskService(TaskDTO taskDTO){
         boolean existsUserId=userService.existsUserById(taskDTO.getUserId());
         if (!existsUserId){
-            throw new EntityNotFoundException("Usuario não encontrado");
+            throw new UserNotFoundException("Usuário não encontrado");
         }
 
         Task taskModel = modelMapper.map(taskDTO, Task.class);
@@ -45,7 +47,7 @@ public class TaskService {
     }
 
     public EntityModel<TaskDTO> findTaskByIdService(Long id){
-        Task taskModel = repository.findById(id).orElseThrow(()-> new EntityNotFoundException("Tarefa não encontrada"));
+        Task taskModel = repository.findById(id).orElseThrow(()-> new TaskNotFoundException("Tarefa não encontrada"));
         TaskDTO taskDTO= modelMapper.map(taskModel, TaskDTO.class);
 
         return EntityModel.of(taskDTO,
@@ -56,10 +58,10 @@ public class TaskService {
         boolean existsUserId=userService.existsUserById(taskDTO.getUserId());
 
         if (!existsUserId){
-            throw new EntityNotFoundException("Usuário não encontrado");
+            throw new UserNotFoundException("Usuário não encontrado");
         }
 
-        Task taskModel = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Tarefa não encontrada"));
+        Task taskModel = repository.findById(id).orElseThrow(() -> new TaskNotFoundException("Tarefa não encontrada"));
         taskModel.setTitle(taskDTO.getTitle());
         taskModel.setDescription(taskDTO.getDescription());
         taskModel.setStatus(taskDTO.getStatus());
@@ -74,7 +76,7 @@ public class TaskService {
         boolean existsTaskId = repository.existsById(id);
 
         if(!existsTaskId){
-            throw new EntityNotFoundException("Tarefa não encontrada");
+            throw new TaskNotFoundException("Tarefa não encontrada");
         }
 
         repository.deleteById(id);
