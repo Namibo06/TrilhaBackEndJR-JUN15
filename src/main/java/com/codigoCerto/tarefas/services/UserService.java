@@ -46,7 +46,6 @@ public class UserService {
             throw new UserNotFoundException("Usuário não encontrado");
         }
         ResponseUserDTO userDTO = new ResponseUserDTO();
-        userDTO.setId(userModel.get().getId());
         userDTO.setUsername(userModel.get().getUsername());
         userDTO.setEmail(userModel.get().getEmail());
         return userDTO;
