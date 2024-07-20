@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ErrorResponseDTO> handleUserNotFoundException(UserNotFoundException ex){
+    @ExceptionHandler(RegisterNotFoundException.class)
+    public ResponseEntity<ErrorResponseDTO> handleRegisterNotFoundException(RegisterNotFoundException ex){
         ErrorResponseDTO errorResponse = new ErrorResponseDTO(ex.getMessage(), "Registro não encontrado");
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
