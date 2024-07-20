@@ -4,6 +4,7 @@ import com.codigoCerto.tarefas.dtos.*;
 import com.codigoCerto.tarefas.exceptions.CredentialsInvalidException;
 import com.codigoCerto.tarefas.exceptions.EmailAlreadyExistsException;
 import com.codigoCerto.tarefas.exceptions.RegisterNotFoundException;
+import com.codigoCerto.tarefas.exceptions.ValidationException;
 import com.codigoCerto.tarefas.models.User;
 import com.codigoCerto.tarefas.repositories.UserRepository;
 import org.modelmapper.ModelMapper;
@@ -27,6 +28,30 @@ public class UserService {
     private PasswordEncoder encoder;
 
     public User createUserService(UserDTO userDTO){
+        if(userDTO.getUsername().length() > 20){
+            throw new ValidationException("Tamanho do nome de usuário excedido,deve ter até 20 caracteres");
+        }
+
+        if(userDTO.getUsername().isEmpty()){
+            throw new ValidationException("Nome do usuário não pode ser nulo");
+        }
+
+        if(userDTO.getEmail().length() > 20){
+            throw new ValidationException("Tamanho do email excedido,deve ter até 150 caracteres");
+        }
+
+        if(userDTO.getEmail().isEmpty()){
+            throw new ValidationException("Email não pode ser nulo");
+        }
+
+        if(userDTO.getPassword().length() > 100){
+            throw new ValidationException("Tamanho da senha excedido,deve ter até 150 caracteres");
+        }
+
+        if(userDTO.getPassword().isEmpty()){
+            throw new ValidationException("Senha não pode ser nulo");
+        }
+
         boolean existsByEmail = existsByEmailService(userDTO.getEmail());
         if (existsByEmail){
             throw new EmailAlreadyExistsException();
@@ -57,6 +82,22 @@ public class UserService {
     }
 
     public ResponseApiMessageStatus updateUserByIdService(Long id,ResponseUserDTO userDTO){
+        if(userDTO.getUsername().length() > 20){
+            throw new ValidationException("Tamanho do nome de usuário excedido,deve ter até 20 caracteres");
+        }
+
+        if(userDTO.getUsername().isEmpty()){
+            throw new ValidationException("Nome do usuário não pode ser nulo");
+        }
+
+        if(userDTO.getEmail().length() > 20){
+            throw new ValidationException("Tamanho do email excedido,deve ter até 150 caracteres");
+        }
+
+        if(userDTO.getEmail().isEmpty()){
+            throw new ValidationException("Email não pode ser nulo");
+        }
+
         if (!repository.existsById(id)) {
             throw new RegisterNotFoundException("Usuário não encontrado");
         }
@@ -86,6 +127,14 @@ public class UserService {
     }
 
     public ResponseApiMessageStatus updatePasswordByIdService(Long id, ResponsePasswordDTO passwordDTO){
+        if(passwordDTO.getPassword().length() > 100){
+            throw new ValidationException("Tamanho da senha excedido,deve ter até 150 caracteres");
+        }
+
+        if(passwordDTO.getPassword().isEmpty()){
+            throw new ValidationException("Senha não pode ser nulo");
+        }
+
         boolean existsUser = existsUserById(id);
         if(!existsUser){
             throw new RegisterNotFoundException("Usuário não encontrado");
@@ -117,6 +166,22 @@ public class UserService {
     }
 
     public Boolean authenticateUser(LoginDTO loginDTO) {
+        if(loginDTO.getEmail().length() > 20){
+            throw new ValidationException("Tamanho do email excedido,deve ter até 150 caracteres");
+        }
+
+        if(loginDTO.getEmail().isEmpty()){
+            throw new ValidationException("Email não pode ser nulo");
+        }
+
+        if(loginDTO.getPassword().length() > 100){
+            throw new ValidationException("Tamanho da senha excedido,deve ter até 150 caracteres");
+        }
+
+        if(loginDTO.getPassword().isEmpty()){
+            throw new ValidationException("Senha não pode ser nulo");
+        }
+
         Optional<User> optionalUser = repository.findByEmail(loginDTO.getEmail());
 
         if (optionalUser.isEmpty()) {
