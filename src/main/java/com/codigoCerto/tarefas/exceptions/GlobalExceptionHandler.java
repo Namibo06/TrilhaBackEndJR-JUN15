@@ -32,4 +32,10 @@ public class GlobalExceptionHandler {
         ErrorResponseDTO errorResponse = new ErrorResponseDTO(ex.getMessage(), "Não autorizado");
         return new ResponseEntity<>(errorResponse,HttpStatus.UNAUTHORIZED);
     }
+
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<ErrorResponseDTO> handleValidationException(ValidationException ex){
+        ErrorResponseDTO errorResponse = new ErrorResponseDTO(ex.getMessage(), "Erro na validação");
+        return new ResponseEntity<>(errorResponse,HttpStatus.BAD_REQUEST);
+    }
 }
