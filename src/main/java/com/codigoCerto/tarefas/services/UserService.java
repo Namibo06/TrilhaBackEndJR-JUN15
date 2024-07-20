@@ -64,15 +64,17 @@ public class UserService {
         User existingUser = repository.findById(id).orElseThrow(() ->
                 new RegisterNotFoundException("Usuário não encontrado"));
 
+
         if (!existingUser.getEmail().equals(userDTO.getEmail()) &&
                 repository.existsByEmail(userDTO.getEmail())) {
             throw new EmailAlreadyExistsException();
         }
 
         existingUser.setUsername(userDTO.getUsername());
-        existingUser.setEmail(userDTO.getEmail());
-        if(userDTO.getEmail() == null){
-            existingUser.setEmail(existingUser.getEmail());
+        existingUser.setEmail(existingUser.getEmail());
+
+        if(userDTO.getEmail() != null){
+            existingUser.setEmail(userDTO.getEmail());
         }
 
         repository.save(existingUser);
