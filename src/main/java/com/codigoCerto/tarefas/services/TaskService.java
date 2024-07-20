@@ -4,6 +4,7 @@ import com.codigoCerto.tarefas.controllers.TaskController;
 import com.codigoCerto.tarefas.dtos.ResponseApiMessageStatus;
 import com.codigoCerto.tarefas.dtos.TaskDTO;
 import com.codigoCerto.tarefas.exceptions.RegisterNotFoundException;
+import com.codigoCerto.tarefas.exceptions.ValidationException;
 import com.codigoCerto.tarefas.models.Task;
 import com.codigoCerto.tarefas.repositories.TaskRepository;
 import org.modelmapper.ModelMapper;
@@ -26,6 +27,14 @@ public class TaskService {
     private ModelMapper modelMapper;
 
     public Task createTaskService(TaskDTO taskDTO){
+        if(taskDTO.getTitle().length() > 150){
+            throw new ValidationException("Tamanho do titulo excedido,deve ter até 150 caracteres");
+        }
+
+        if (taskDTO.getTitle().isEmpty()){
+            throw new ValidationException("Titulo não pode ser nulo");
+        }
+
         boolean existsUserId=userService.existsUserById(taskDTO.getUserId());
         if (!existsUserId){
             throw new RegisterNotFoundException("Usuário não encontrado");
