@@ -68,13 +68,16 @@ meu-projeto/
 │   │   │       └── codigoCerto/
 │   │   │           └── tarefas/
 │   │   │               ├── configs/
-│   │   │               │   └──Configs
-│   │   │               │   └──Filter
+│   │   │               │   └── Configs
+│   │   │               │   └── Filter
+│   │   │               │   └── OpenApiConfig
+│   │   │               │   └── WebConfig
 │   │   │               ├── controllers/
 │   │   │               │   └── LoginController
 │   │   │               │   └── TaskController
 │   │   │               │   └── UserController
 │   │   │               ├── dtos/
+│   │   │               │   └── ErrorResponseDTO
 │   │   │               │   └── LoginDTO
 │   │   │               │   └── ResponseApiMessageStatus
 │   │   │               │   └── ResponsePasswordDTO
@@ -84,6 +87,13 @@ meu-projeto/
 │   │   │               │   └── UserDTO
 │   │   │               ├── enums/
 │   │   │               │   └── Status
+│   │   │               ├── exceptions/
+│   │   │               │   └── CredenialsInvalidExcepttion
+│   │   │               │   └── EmailAlreadyExistsException
+│   │   │               │   └── GlobalExceptionHandler
+│   │   │               │   └── RegisterNotFoundException
+│   │   │               │   └── TokenNotFoundException
+│   │   │               │   └── ValidationException
 │   │   │               ├── models/
 │   │   │               │   └── Task
 │   │   │               │   └── User
@@ -130,6 +140,16 @@ meu-projeto/
 ##### Recupero do meu cabeçalho o meu token através de Authorization,e verifico se é nulo,se for lanço uma exceção com mensagem personalizada.
 ##### Retorno o token,retirando através do método replace,somente o "Bearer" que fica no inicio do token,e assim retorno o token.
 
+<br><br>
+
+### **• OpenApiConfig**
+#### Classe de configuração para o Swagger,é passado o titulo,a versão em que se encontra,passa um token passa segurança,com dois servidores (produção e local),passo o nome,o formato,o tipo e o prefixo do token,é passado também como localizar o swagger num método.
+
+<br><br>
+
+### **• WebConfig**
+#### Classe de configuração para o cors,aceita três rotas por segurança,cinco métodos HTTP,todos os headers,e aceita credenciais.
+
 -------------------------------------------------------------------
 ## Models
 ### **• Tabela User - "tb_user"** 
@@ -153,6 +173,13 @@ meu-projeto/
 
 ---------------------------------------------------------------------
 ## DTO's
+
+### **• ErrorResponseDTO**
+### **Atributos:**
+#### ● message - String
+#### ● details - String
+
+<br>
 
 ### **• LoginDTO**
 ### **Atributos:**
@@ -209,12 +236,110 @@ meu-projeto/
 #### ● token - String
 
 ---------------------------------------------------------------------
-## Enum
+## Enums
 ### **• Status**
 ### **Propriedades:**
 #### ● ATIVO
 #### ● CONCLUIDO
 #### ● FECHADO
+
+---------------------------------------------------------------------
+## Exceptions
+### • CredentialsInvalidException
+#### Estende de RuntimeException,tem um construtor que recebe message do tipo String como parâmetro,e dentro do bloco,tem um super passando message como argumento.
+
+<br>
+
+### • EmailAlreadyExistsException
+#### Estende de RuntimeException,tem um construtor que não recebe parâmetro,e dentro do bloco,tem um super passando a mensagem padrão como argumento.
+
+<br><br>
+
+### • GlobalExceptionHandler
+
+#### ▪ handleRegisterNotFoundException
+```
+@ExceptionHandler(RegisterNotFoundException.class)
+public ResponseEntity<ErrorResponseDTO> handleRegisterNotFoundException(RegisterNotFoundException ex){
+    ErrorResponseDTO errorResponse = new ErrorResponseDTO(ex.getMessage(), "Registro não encontrado");
+    return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+}
+```
+#### Carrega anotação "ExceptionHandler" que recebe a classe RegisterNotFoundException,o tipo de retorno é ResponseEntity<ErrorResponseDTO>,passa ex do tipo RegisterNotFoundException como parâmetro.
+#### A variável errorResponse do tipo ErrorResponseDTO,que recebe uma nova instância de ErrorResponse,passando como argumento,a variável ex pegando a mensagem através do método getMessage(),e a uma mensagem personalizada como segundo argumento.
+#### Retorna uma nova instância de ResponseEntity,passando comoargumento a variável errorResponse,e o método HTTP 404.
+
+<br>
+
+#### ▪ handlePasswordWrongException
+```
+@ExceptionHandler(CredentialsInvalidException.class)
+public ResponseEntity<ErrorResponseDTO> handlePasswordWrongException(CredentialsInvalidException ex) {
+    ErrorResponseDTO errorResponse = new ErrorResponseDTO(ex.getMessage(), "Erro nas credenciais");
+    return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+}
+```
+#### Carrega anotação "ExceptionHandler" que recebe a classe CredentialsInvalidException,o tipo de retorno é ResponseEntity<ErrorResponseDTO>,passa ex do tipo CredentialsInvalidException como parâmetro.
+#### A variável errorResponse do tipo ErrorResponseDTO,que recebe uma nova instância de ErrorResponse,passando como argumento,a variável ex pegando a mensagem através do método getMessage(),e a uma mensagem personalizada como segundo argumento.
+#### Retorna uma nova instância de ResponseEntity,passando comoargumento a variável errorResponse,e o método HTTP 400.
+
+<br>
+
+#### ▪ handleEmailAlreadyExistsException
+```
+@ExceptionHandler(EmailAlreadyExistsException.class)
+public ResponseEntity<ErrorResponseDTO> handleEmailAlreadyExistsException(EmailAlreadyExistsException ex){
+    ErrorResponseDTO errorResponse = new ErrorResponseDTO(ex.getMessage(), "Email já ativo no sistema");
+    return new ResponseEntity<>(errorResponse,HttpStatus.CONFLICT);
+}
+```
+#### Carrega anotação "ExceptionHandler" que recebe a classe EmailAlreadyExistsException,o tipo de retorno é ResponseEntity<ErrorResponseDTO>,passa ex do tipo EmailAlreadyExistsException como parâmetro.
+#### A variável errorResponse do tipo ErrorResponseDTO,que recebe uma nova instância de ErrorResponse,passando como argumento,a variável ex pegando a mensagem através do método getMessage(),e a uma mensagem personalizada como segundo argumento.
+#### Retorna uma nova instância de ResponseEntity,passando comoargumento a variável errorResponse,e o método HTTP 409.
+
+<br>
+
+#### ▪ handleTokenNotFoundException
+```
+@ExceptionHandler(TokenNotFoundException.class)
+public ResponseEntity<ErrorResponseDTO> handleTokenNotFoundException(TokenNotFoundException ex){
+    ErrorResponseDTO errorResponse = new ErrorResponseDTO(ex.getMessage(), "Não autorizado");
+    return new ResponseEntity<>(errorResponse,HttpStatus.UNAUTHORIZED);
+}
+```
+#### Carrega anotação "ExceptionHandler" que recebe a classe TokenNotFoundException,o tipo de retorno é ResponseEntity<ErrorResponseDTO>,passa ex do tipo TokenNotFoundException como parâmetro.
+#### A variável errorResponse do tipo ErrorResponseDTO,que recebe uma nova instância de ErrorResponse,passando como argumento,a variável ex pegando a mensagem através do método getMessage(),e a uma mensagem personalizada como segundo argumento.
+#### Retorna uma nova instância de ResponseEntity,passando comoargumento a variável errorResponse,e o método HTTP 401.
+
+<br>
+
+#### ▪ handleValidationException
+```
+@ExceptionHandler(ValidationException.class)
+public ResponseEntity<ErrorResponseDTO> handleValidationException(ValidationException ex){
+    ErrorResponseDTO errorResponse = new ErrorResponseDTO(ex.getMessage(), "Erro na validação");
+    return new ResponseEntity<>(errorResponse,HttpStatus.BAD_REQUEST);
+}
+```
+#### Carrega anotação "ExceptionHandler" que recebe a classe ValidationException,o tipo de retorno é ResponseEntity<ErrorResponseDTO>,passa ex do tipo ValidationException como parâmetro.
+#### A variável errorResponse do tipo ErrorResponseDTO,que recebe uma nova instância de ErrorResponse,passando como argumento,a variável ex pegando a mensagem através do método getMessage(),e a uma mensagem personalizada como segundo argumento.
+#### Retorna uma nova instância de ResponseEntity,passando comoargumento a variável errorResponse,e o método HTTP 400.
+
+
+<br><br>
+
+### • RegisterNotFoundException
+#### Estende de RuntimeException,tem um construtor que recebe message do tipo String como parâmetro,e dentro do bloco,tem um super passando message como argumento.
+
+<br>
+
+### • TokenNotFoundException
+#### Estende de RuntimeException,tem um construtor que não recebe parâmetro,e dentro do bloco,tem um super passando a mensagem padrão como argumento.
+
+<br>
+
+### • ValidationException
+#### Estende de RuntimeException,tem um construtor que recebe message do tipo String como parâmetro,e dentro do bloco,tem um super passando message como argumento.
 
 
 ---------------------------------------------------------------------
@@ -246,7 +371,7 @@ public Boolean existsByEmailService(String email){
     return repository.existsByEmail(email);
 }
 ``` 
-#### ↑ Retorna um Boolean se existir ou não um usuário com determinado email que é do tipo String e é passado por argumento.
+#### Retorna um Boolean se existir ou não um usuário com determinado email que é do tipo String e é passado por argumento.
 
 <br><br>
 
@@ -256,99 +381,140 @@ public boolean existsUserById(Long id){
     return repository.existsById(id);
 }
 ``` 
-#### ↑ Retorna um Boolean se existir ou não um usuário com um determinado id que é do tipo Long passado por argumento.
+#### Retorna um Boolean se existir ou não um usuário com um determinado id que é do tipo Long passado por argumento.
 
 <br><br>
 
 #### ***▪ createUserService***
 ```
-public ResponseApiMessageStatus createUserService(UserDTO userDTO){
+public User createUserService(UserDTO userDTO){
+    if(userDTO.getUsername().length() > 20){
+        throw new ValidationException("Tamanho do nome de usuário excedido,deve ter até 20 caracteres");
+    }
+
+    if(userDTO.getUsername().isEmpty()){
+        throw new ValidationException("Nome do usuário não pode ser nulo");
+    }
+
+    if(userDTO.getEmail().length() > 20){
+        throw new ValidationException("Tamanho do email excedido,deve ter até 150 caracteres");
+    }
+
+    if(userDTO.getEmail().isEmpty()){
+        throw new ValidationException("Email não pode ser nulo");
+    }
+
+    if(userDTO.getPassword().length() > 100){
+        throw new ValidationException("Tamanho da senha excedido,deve ter até 150 caracteres");
+    }
+
+    if(userDTO.getPassword().isEmpty()){
+        throw new ValidationException("Senha não pode ser nulo");
+    }
+
     boolean existsByEmail = existsByEmailService(userDTO.getEmail());
     if (existsByEmail){
-        throw new DataIntegrityViolationException("Email já existe,tente outro por favor");
+        throw new EmailAlreadyExistsException();
     }
 
     User userModel = modelMapper.map(userDTO, User.class);
-    userModel.setUsername(userDTO.getUsername());
-    userModel.setEmail(userDTO.getEmail());
-    userModel.setPassword(userDTO.getPassword());
+    userModel.setPassword(encoder.encode(userDTO.getPassword()));
     repository.save(userModel);
 
-    String message = "Usuário criado com sucesso!";
-    Integer status = 201;
-    return new ResponseApiMessageStatus(message,status);
+    return userModel;
 } 
 ``` 
-#### ↑ O método retorna um ResponseApiMessageStatus,sua finalidade é criar um usuário,recebe como parâmetro um UserDTO.
-#### ↑ É atribuido a uma variável do tipo boolean o método existsByEmailService,onde o email é recuperado através do getEmail do userDTO trazido da requisição,é verificado se existsByEmail fo igual a true,será lançada uma exceção de DataIntegrityViolationException com uma mensagem personalizada.
-#### ↑ É criado uma variável do tipo User que recebe um mapeamento de DTO para Entidade,é setado as propriedades das requisições como username,email e password,que são recuperadas através de userDTO.getNomeDaPropriedade,e chamo o método save() do JPARepository e a entidade é salva no banco de dados.
-#### ↑ É criado duas variáveis,um para message e outro para status,ambos para sucesso do processo e personalizados,e tem como retorno uma nova instância de ResponseApiMessageStatus,que recebe por argumentos os atributos message e status. 
+#### O método retorna um User,sua finalidade é criar um usuário,recebe como parâmetro userDTO do tipo UserDTO.
+#### É verificado se o nome de usuário é maior que 20 caracteres,se o nome de usuário é vazio,se o email é maior que 20 caracteres,se o email é vazio,se a senha é maior que 100 caracteres,se a senha é vazia,em todos é lançado uma exceção ValidationException,com mensagens personalizadas. 
+#### A variável existsByEmail,é do tipo boolean,e recebe o método existsByEmailService(),passando como argumento email de userDTO.É verificado se retorna true,se retornar é lançado uma nova exceção EmailAlreadyExistsException().
+#### A variável userModel,é do tipo User,recebe um mapeamento de userDTO,para User.É setado a password em userModel a password vinda de userDTO passa como argumento do método encode() vindo de encoder,para criptografar a senha.É acessado o método save() de repository,e passado como argumento userModel.  
+#### É retornado userModel.
 
 <br><br>
 
 #### ***▪ findUserById***
 ```
 public ResponseUserDTO findUserById(Long id){
-    User userModel = repository.findById(id).orElseThrow(()-> new EntityNotFoundException("ID de usuário não encontrado"));
-    
+    Optional<User> userModel = repository.findById(id);
+    if(userModel.isEmpty()){
+        throw new RegisterNotFoundException("Usuário não encontrado");
+    }
     ResponseUserDTO userDTO = new ResponseUserDTO();
-    userDTO.setId(userModel.getId());
-    userDTO.setUsername(userModel.getUsername());
-    userDTO.setEmail(userModel.getEmail());
-    
+    userDTO.setUsername(userModel.get().getUsername());
+    userDTO.setEmail(userModel.get().getEmail());
     return userDTO;
 }
 ```
-#### ↑ O método retorna ResponseUserDTO,sua finalidade é recuperar um usuário pelo seu id,recebe como parâmetro um id do tipo Long.
-#### ↑ Tem uma variável do tipo User que recupera um usuário pelo id do repository,e para evitar exceções do tipo NullPointerException,utilizo o método orElseThrow() para gerar uma exceção EntityNotFoundException com uma mensagem personalizada.   
-#### ↑ É criado uma variável com retorno do tipo ResponseUserDTO que inicializa uma nova instância de ResponseUserDTO vazia,através desse atributo seto as propriedades id,username e email,que  são recuperadas pelo atributo userModel e inseridas no atributo userDTO,e por fim userDTO é retornada.  
+#### O método retorna ResponseUserDTO,sua finalidade é recuperar um usuário pelo seu id,recebe como parâmetro um id do tipo Long.
+#### Tem uma variável userModel,do tipo Optional<User> que recupera um usuário pelo id do repository,e para evitar exceções do tipo NullPointerException,utilizo a classe Optional.É verificado se userModel retorna vazio,se retornar,é lançado uma nova exceção de RegisterNotFoundException,passando uma mensagem personalizada.    
+#### É criado uma variável com retorno do tipo ResponseUserDTO que inicializa uma nova instância de ResponseUserDTO vazia,através desse atributo seto as propriedades id,username e email,que  são recuperadas pelo atributo userModel e inseridas no atributo userDTO,e por fim userDTO é retornada.  
 
 <br><br>
 
 #### ***▪ findAll***
 ```
-public List<UserDTO> findAll(){
-    List<User> userList=repository.findAll();
-    List<UserDTO> userDTOList = new ArrayList<>();
-    for (User user:userList){
-        UserDTO userDTO=modelMapper.map(user,UserDTO.class);
-        userDTOList.add(userDTO);
-    }
-
-    return userDTOList;
+public Page<UserDTO> findAll(Pageable pageable){
+    return repository
+            .findAll(pageable)
+            .map(user -> modelMapper.map(user, UserDTO.class));
 }
 ```
-#### ↑ O método retorna uma lista de UserDTO,sua finalidade é recuperar todos usuários,até então somente para testes.
-#### ↑ Tem duas variáveis,ambos listas,a primeira do tipo User na qual irá ser armazenado os usuários recuperados do banco através do repository eseu método findAll(),a segunda lista é do tipo UserDTO para armazenar os usuários que de entidade serão mapeados para DTO e começa como um ArrayList vazio.
-#### ↑ É realizado um for na variável userList que será armazenado cada usuário em uma variável do tipo User,dentro do bloco for,tem um variável do tipo UserDTO,que mapea os dados de entidade para DTO,e adiciona essa variável na lista de DTO,fora do bloco for,é retornado a lista de DTO.
+#### O método retorna uma Page<UserDTO>,sua finalidade é recuperar todos usuários,recebe como parâmetro pageable do tipo Pageable.
+#### Retorna ométodo findAll() de repository,passando como argumento pageable,é acessado o método map(),passando como parâmetro user,realizando um mapeamento de user,para UserDTO.
 
 <br><br>
 
 #### ***▪ updateUserByIdService***
 ```
 public ResponseApiMessageStatus updateUserByIdService(Long id,ResponseUserDTO userDTO){
-    boolean existsUser = existsUserById(id);
-    if(!existsUser){
-        throw new EntityNotFoundException("Usuário não encontrado");
+    if(userDTO.getUsername().length() > 20){
+        throw new ValidationException("Tamanho do nome de usuário excedido,deve ter até 20 caracteres");
     }
 
-    Optional<User> userModel = repository.findById(id);
-    userModel.map(user -> {
-        user.setUsername(userDTO.getUsername());
-        user.setEmail(userDTO.getEmail());
-        repository.save(user);
-        return user;
-    });
+    if(userDTO.getUsername().isEmpty()){
+        throw new ValidationException("Nome do usuário não pode ser nulo");
+    }
+
+    if(userDTO.getEmail().length() > 20){
+        throw new ValidationException("Tamanho do email excedido,deve ter até 150 caracteres");
+    }
+
+    if(userDTO.getEmail().isEmpty()){
+        throw new ValidationException("Email não pode ser nulo");
+    }
+
+    if (!repository.existsById(id)) {
+        throw new RegisterNotFoundException("Usuário não encontrado");
+    }
+
+    User existingUser = repository.findById(id).orElseThrow(() ->
+            new RegisterNotFoundException("Usuário não encontrado"));
+
+
+    if (!existingUser.getEmail().equals(userDTO.getEmail()) &&
+            repository.existsByEmail(userDTO.getEmail())) {
+        throw new EmailAlreadyExistsException();
+    }
+
+    existingUser.setUsername(userDTO.getUsername());
+    existingUser.setEmail(existingUser.getEmail());
+
+    if(userDTO.getEmail() != null){
+        existingUser.setEmail(userDTO.getEmail());
+    }
+
+    repository.save(existingUser);
+
     String message = "Usuário atualizado com sucesso";
     Integer status = 200;
 
-    return new ResponseApiMessageStatus(message,status);
+    return new ResponseApiMessageStatus(message, status);
 }
 ```
-#### ↑ O método retorna ResponseApiMessageStatus,sua finalidade é alterar o username e/ou email de um determinado usuário pelo seu id,que tem como parâmetro um id com tipo Long,e um userDTO do tipo ResponseUserDTO.
-#### ↑ Tem uma variável do tipo boolean que recebe o método existsUserId que recebe o id como argumento,para verificar se o usuário existe realmente,senão existir,é lançada uma exceção do tipo EntityNotFoundException com uma mensagem personalizada.
-#### ↑ Tem uma variável do tipo Optional<User> que facilita o uso do map e prepara caso o retorno seja nulo,a variável recebe um usuário pelo seu id,logo abaixo,utilizo uma expressão lambda map na variável setando 'user' como parâmetro,através dele seto username e email,os valores são recuperados através do atributo userDTO,chamo repository,e pelo seu método save,salvo a entidade user e a retorno.
-#### ↑ Crio duas variáveis personalizadas,um é message do tipo String,e o outro é status do tipo Integer e retorno uma nova instância de ResponseApiMessageStatus que recebe message e status como parâmetros. 
+#### O método retorna ResponseApiMessageStatus,sua finalidade é alterar o username e/ou email de um determinado usuário pelo seu id,que tem como parâmetro um id com tipo Long,e um userDTO do tipo ResponseUserDTO.
+#### Tem uma variável do tipo boolean que recebe o método existsUserId que recebe o id como argumento,para verificar se o usuário existe realmente,senão existir,é lançada uma exceção do tipo EntityNotFoundException com uma mensagem personalizada.
+#### Tem uma variável do tipo Optional<User> que facilita o uso do map e prepara caso o retorno seja nulo,a variável recebe um usuário pelo seu id,logo abaixo,utilizo uma expressão lambda map na variável setando 'user' como parâmetro,através dele seto username e email,os valores são recuperados através do atributo userDTO,chamo repository,e pelo seu método save,salvo a entidade user e a retorno.
+#### Crio duas variáveis personalizadas,um é message do tipo String,e o outro é status do tipo Integer e retorno uma nova instância de ResponseApiMessageStatus que recebe message e status como parâmetros. 
 
 <br><br>
 
@@ -572,16 +738,23 @@ public void deleteTaskByIdService(Long id){
 ```
 @PostMapping
 public ResponseEntity<ResponseApiMessageStatus> createUser(@RequestBody UserDTO userDTO, UriComponentsBuilder uriBuilder){
-    ResponseApiMessageStatus response = service.createUserService(userDTO);
-    URI path = uriBuilder.path("/users/{id}").buildAndExpand(userDTO.getId()).toUri();
+    User user = service.createUserService(userDTO);
+    Long userId = user.getId();
+    URI path = uriBuilder.path("/users/{id}").buildAndExpand(userId).toUri();
+
+    String message = "Usuário criado com sucesso!";
+    Integer status = 201;
+    ResponseApiMessageStatus response= new ResponseApiMessageStatus(message,status);
 
     return ResponseEntity.created(path).body(response);
 }
 ```
-#### ↑ O método para criar usuário,utiliza a anotação 'PostMapping',o retorno é do tipo ResponseEntity<ResponseApiMessageStatus>,recebe por parâmetro UserDTO acompanhado da anotação 'RequestBody' que diz que são requisições com corpo,e UriComponentBuilder que iremos utilizar para a determinar a path mais tarde.
-#### ↑ Tem uma variável que recebe o retorno da service createUserService do tipo ResponseApiMessageStatus,que recebe por argumento userDTO.
-#### ↑ Logo abaixo,tem uma variável path do tipo URI,que recebe o parâmetro uriBuilder acessando o método path definindo o caminho até o id,logo após defino o id recebendo-o através do argumento userDTO do método buildAndExpand e depois transformo em URI.
-#### ↑ O retorno é ResponseEntity,que acessa created inserindo o atriuto path e depois acessa body inserindo a variável response.
+#### O método para criar usuário,utiliza a anotação 'PostMapping',o retorno é do tipo ResponseEntity<ResponseApiMessageStatus>,recebe por parâmetro UserDTO acompanhado da anotação 'RequestBody' que diz que são requisições com corpo,e UriComponentBuilder que iremos utilizar para a determinar a path mais tarde.
+#### A variável user é do tipo User,recebe o retorno da service createUserService,que recebe por argumento userDTO.
+#### A variável userId é do tipo Long,e acessa o método getId de user.
+#### Logo abaixo,há uma variável path do tipo URI,que recebe o parâmetro uriBuilder acessando o método path definindo o caminho até o id,logo após digo que o argumento do método buildAndExpand é userId e depois transformo em URI.
+#### A variável message é do tipo String e recebe uma mensagem personalizada.A variável status é do tipo Integer e recebe um valor personalizado.A variável response do tipo ResponseApiMessageStatus,recebe uma nova instância de ResponseApiMessageStatus,passando como argumento message e status.
+#### O retorno é ResponseEntity,que acessa created inserindo o atributo path e depois acessa body inserindo a variável response.
 
 <br><br>
 
@@ -593,9 +766,9 @@ public ResponseEntity<ResponseUserDTO> getUserById(@PathVariable Long id){
     return ResponseEntity.ok(userById);
 }
 ```
-#### ↑ O método para buscar um usuário pelo id,utiliza a anotação 'GetMapping' com um id depois da barra na rota,o retorno é do tipo ResponseEntity<ResponseUserDTO>,recebe por parâmetro id do tipo Long através da anotação 'PathVariable'.
-#### ↑ Tem uma variável userById do tipo ResponseUserDTO que recebe da service o método findUserById passando por argumento o id.
-#### ↑ O retorno é ResponseEntity,que acessando o método ok,que passa a variável userById.
+#### O método para buscar um usuário pelo id,utiliza a anotação 'GetMapping' com um id depois da barra na rota,o retorno é do tipo ResponseEntity<ResponseUserDTO>,recebe por parâmetro id do tipo Long através da anotação 'PathVariable'.
+#### Tem uma variável userById do tipo ResponseUserDTO que recebe da service o método findUserById passando por argumento o id.
+#### O retorno é ResponseEntity,que acessando o método ok,que passa a variável userById.
 
 <br><br>
 
@@ -607,9 +780,9 @@ public ResponseEntity<List<UserDTO>> getAllUsers(){
     return ResponseEntity.ok(userDTOList);
 }
 ```
-#### ↑ O método para buscar todos usuários,utiliza a anotação 'GetMapping',o retorno é do tipo ResponseEntity<List<UserDTO>>.
-#### ↑ Tem uma variável userDTOList do tipo lista UserDTO que recebe da service pelo método findAll todos usuários.
-#### ↑ O retorno é ResponseEntity,que acessando ok,passa a variável userDTOList.
+#### O método para buscar todos usuários,utiliza a anotação 'GetMapping',o retorno é do tipo ResponseEntity<List<UserDTO>>.
+#### Tem uma variável userDTOList do tipo lista UserDTO que recebe da service pelo método findAll todos usuários.
+#### O retorno é ResponseEntity,que acessando ok,passa a variável userDTOList.
 
 <br><br>
 
@@ -622,9 +795,9 @@ public ResponseEntity<ResponseApiMessageStatus> updateUserById(@PathVariable Lon
     return ResponseEntity.ok(response);
 }
 ```
-#### ↑ O método para atualizar o username e email de um usuário pelo id,utiliza a anotação 'PutMapping' definindo barra id na rota,o retorno é do tipo ResponseEntity<ResponseApiMessageStatus>,recebe como parâmetro id do tipo Long pela anotacao 'PathVariable',e userDTO do tipo ResponseUserDTO que utiliza a anotacao 'RequestBody' para captar os dados durante a requisição.
-#### ↑ Tem uma variável response do tipo ResponseApiMessageStatus,que recebe da service,o método updateUserByIdService,com argumentos id e userDTO.
-#### ↑ O retorno é ResponsiveEntity,que ao acessar o método ok,passa a variável response.
+#### O método para atualizar o username e email de um usuário pelo id,utiliza a anotação 'PutMapping' definindo barra id na rota,o retorno é do tipo ResponseEntity<ResponseApiMessageStatus>,recebe como parâmetro id do tipo Long pela anotacao 'PathVariable',e userDTO do tipo ResponseUserDTO que utiliza a anotacao 'RequestBody' para captar os dados durante a requisição.
+#### Tem uma variável response do tipo ResponseApiMessageStatus,que recebe da service,o método updateUserByIdService,com argumentos id e userDTO.
+#### O retorno é ResponsiveEntity,que ao acessar o método ok,passa a variável response.
 
 <br><br>
 
@@ -637,9 +810,9 @@ public ResponseEntity<ResponseApiMessageStatus> updatePasswordById(@PathVariable
     return ResponseEntity.ok(response);
 }
 ```
-#### ↑ O método para atualizar a password de um usuário pelo id,utiliza a anotação 'PutMapping' definindo barra updatePassword barra id na rota,o retorno é do tipo ResponseEntity<ResponseApiMessageStatus>,recebe como parâmetro id do tipo Long pela anotacao 'PathVariable',e passwordDTO do tipo ResponsePasswordDTO que utiliza a anotacao 'RequestBody' para captar os dados durante a requisição.
-#### ↑ Tem uma variável response do tipo ResponseApiMessageStatus,que recebe da service,o método updatePasswordByIdService,com argumentos id e passwordDTO.
-#### ↑ O retorno é ResponsiveEntity,que ao acessar o método ok,passa a variável response.
+#### O método para atualizar a password de um usuário pelo id,utiliza a anotação 'PutMapping' definindo barra updatePassword barra id na rota,o retorno é do tipo ResponseEntity<ResponseApiMessageStatus>,recebe como parâmetro id do tipo Long pela anotacao 'PathVariable',e passwordDTO do tipo ResponsePasswordDTO que utiliza a anotacao 'RequestBody' para captar os dados durante a requisição.
+#### Tem uma variável response do tipo ResponseApiMessageStatus,que recebe da service,o método updatePasswordByIdService,com argumentos id e passwordDTO.
+#### O retorno é ResponsiveEntity,que ao acessar o método ok,passa a variável response.
 
 <br><br>
 
@@ -651,9 +824,9 @@ public ResponseEntity<Void> deleteUserById(@PathVariable Long id){
     return ResponseEntity.noContent().build();
 }
 ```
-#### ↑ O método para deletar um usuário pelo id,utiliza a anotação 'DeleteMapping' definindo barra id na rota,o retorno é do tipo ResponseEntity<Void>,recebe como parâmetro id do tipo Long pela anotacao 'PathVariable'.
-#### ↑ Acessa o método deleteUserByIdService da propriedade service vinda através da injeção de dependência,com id como argumento. 
-#### ↑ O retorno é ResponseEntity,que é sem conteúdo,como é sem conteúdo tenho que acecssar noContent() e logo após build().
+#### O método para deletar um usuário pelo id,utiliza a anotação 'DeleteMapping' definindo barra id na rota,o retorno é do tipo ResponseEntity<Void>,recebe como parâmetro id do tipo Long pela anotacao 'PathVariable'.
+#### Acessa o método deleteUserByIdService da propriedade service vinda através da injeção de dependência,com id como argumento. 
+#### O retorno é ResponseEntity,que é sem conteúdo,como é sem conteúdo tenho que acecssar noContent() e logo após build().
 
 <br><br><br>
 
@@ -666,37 +839,28 @@ public ResponseEntity<Void> deleteUserById(@PathVariable Long id){
 #### ***▪ login***
 ```
 public ResponseEntity<ResponseTokenDTO> login(@RequestBody LoginDTO userDTO){
-    try{
-        Boolean existsUser = userService.authenticateUser(userDTO);
-        if(!existsUser){
-            throw new EntityNotFoundException("Usuário não existe");
-        }
-        String tokenCreated = loginService.createToken();
-        ResponseApiMessageStatus updateUserTokenById = userService.updateTokenById(userDTO.getEmail(),tokenCreated);
-        String MESSAGE_OK = updateUserTokenById.getMessage();
-        Integer STATUS_OK = updateUserTokenById.getStatus();
-        ResponseTokenDTO response = new ResponseTokenDTO(tokenCreated,MESSAGE_OK,STATUS_OK);
+    Boolean existsUser = userService.authenticateUser(userDTO);
 
-        return ResponseEntity.ok(response);
-    }catch (BadCredentialsException e){
-        throw new BadCredentialsException("Houve alguma falha ao autenticar usuário: "+e);
-    }catch (Exception e){
-        throw new InternalException("Erro interno: "+e);
-    }
+    String tokenCreated = loginService.createToken();
+    ResponseApiMessageStatus updateUserTokenById = userService.updateTokenById(userDTO.getEmail(),tokenCreated);
+    String MESSAGE_OK = updateUserTokenById.getMessage();
+    Integer STATUS_OK = updateUserTokenById.getStatus();
+    ResponseTokenDTO response = new ResponseTokenDTO(tokenCreated,MESSAGE_OK,STATUS_OK);
+
+    return ResponseEntity.ok(response);
 }
 ```
-#### ↑ O método login,utiliza a anotação 'PostMapping',o retorno é do tipo ResponseEntity<ResponseTokenDTO>,recebe por parâmetro userDTO do tipo LoginDTO acompanhado da anotação 'RequestBody' que diz que são requisições com corpo.
-#### ↑ Dentro do bloco try,tem seis variáveis.
-#### ↑ A primeira variável é existsUser do tipo boolean,que recebe userService acessando o método authenticateUser,passando por argumento userDTO,se o retorno da variável for false,será lançada uma exceção EntityNotFoundException com uma mensagem personalizada.
-#### ↑ A segunda variável é a tokenCreated do tipo String,que recebe loginService acessando o método createToken.
-#### ↑ A terceira variável é a updateUserTokenById do tipo ResponseApiMessageStatus que recebe userService acessando o método updateTokenById,passando por argumento o email vindo de userDTO,e o token de tokenCreated.
-#### ↑ A quarta variável é a MESSAGE_OK do tipo String que recebe updateUserTokenById,através do método acessor getter,recupera a message.
-#### ↑ A quinta variável é STATUS_OK que recebe updateUserTokenById,através do método acessor getter,recupera o status.
-#### ↑ A sexta é response do tipo ResponseTokenDTO na qual recebe uma nova instância de ResponseTokenDTO passando o tokenCreated,MESSAGE_OK e STATUS_OK como argumento.
-#### ↑ É retornado um ResponseEntity,acessando o método ok,passando response como argumento.
-#### ↑ Tem dois catch's,o primeiro é do tipo BadCredentialsException,que é lançado uma exceção do tipo BadCredentialsException,com uma mensagem personalizada junto com a variável do parâmetro,e o segundo uma Exception generalista na qual é lançada uma InternalException passando uma mensagem personalizada junto com a variável do parâmetro.  
+#### O método login,utiliza a anotação 'PostMapping',o retorno é do tipo ResponseEntity<ResponseTokenDTO>,recebe por parâmetro userDTO do tipo LoginDTO acompanhado da anotação 'RequestBody' que diz que são requisições com corpo.
+#### Há seis variáveis.
+#### A primeira variável é existsUser do tipo boolean,que recebe userService acessando o método authenticateUser,passando por argumento userDTO,se o retorno da variável for false,será lançada uma exceção EntityNotFoundException com uma mensagem personalizada.
+#### A segunda variável é a tokenCreated do tipo String,que recebe loginService acessando o método createToken.
+#### A terceira variável é a updateUserTokenById do tipo ResponseApiMessageStatus que recebe userService acessando o método updateTokenById,passando por argumento o email vindo de userDTO,e o token de tokenCreated.
+#### A quarta variável é a MESSAGE_OK do tipo String que recebe updateUserTokenById,através do método acessor getter,recupera a message.
+#### A quinta variável é STATUS_OK que recebe updateUserTokenById,através do método acessor getter,recupera o status.
+#### A sexta variável é response do tipo ResponseTokenDTO na qual recebe uma nova instância de ResponseTokenDTO passando o tokenCreated,MESSAGE_OK e STATUS_OK como argumento.
+#### É retornado um ResponseEntity,acessando o método ok,passando response como argumento. 
 
-<br>
+<br><br>
 
 #### ***▪ verifyToken***
 ```
@@ -710,10 +874,10 @@ public ResponseEntity<ResponseApiMessageStatus> verifyToken(@PathVariable String
     return ResponseEntity.ok(response);
 }
 ```
-#### ↑ O método verifyToken,utiliza a anotação 'PostMapping',o retorno é tod tipo ResponseEntity<ResponseApiMessageStatus>,recebe por parâmetro um token do tipo String e recebida através da url pela anotação 'PathVariable'.
-#### ↑ Acessa o método verifyToken do loginService,e passa como argumento o parâmetro token.
-#### ↑ Tem três variáveis,message do tipo String,status do tipo Integer,e response do tipo ResponseApiMessageStatus que recebe uma nova instância de ResponseApiMessageStatus,passando message e status como argumentos.
-#### ↑ O retorno é do tipo ResponseEntity,acessando o método ok,e passando a variável response como argumento.
+#### O método verifyToken,utiliza a anotação 'PostMapping',o retorno é tod tipo ResponseEntity<ResponseApiMessageStatus>,recebe por parâmetro um token do tipo String e recebida através da url pela anotação 'PathVariable'.
+#### Acessa o método verifyToken do loginService,e passa como argumento o parâmetro token.
+#### Tem três variáveis,message do tipo String,status do tipo Integer,e response do tipo ResponseApiMessageStatus que recebe uma nova instância de ResponseApiMessageStatus,passando message e status como argumentos.
+#### O retorno é do tipo ResponseEntity,acessando o método ok,e passando a variável response como argumento.
 
 <br><br><br>
 
@@ -726,16 +890,23 @@ public ResponseEntity<ResponseApiMessageStatus> verifyToken(@PathVariable String
 #### ***▪ createTask***
 ```
 public ResponseEntity<ResponseApiMessageStatus> createTask(@RequestBody @Valid TaskDTO taskDTO, UriComponentsBuilder uriBuilder){
-    ResponseApiMessageStatus response = service.createTaskService(taskDTO);
-    URI path = uriBuilder.path("/tasks/{id}").buildAndExpand(taskDTO.getId()).toUri();
+    Task task = service.createTaskService(taskDTO);
+    Long taskId = task.getId();
+    URI path = uriBuilder.path("/tasks/{id}").buildAndExpand(taskId).toUri();
+
+    String message="Tarefa criada com sucesso";
+    Integer status=201;
+    ResponseApiMessageStatus response = new ResponseApiMessageStatus(message,status);
 
     return ResponseEntity.created(path).body(response);
 }
 ```
 #### ↑ O método createTask,utiliza a anotação 'PostMapping',o retorno é do tipo ResponseEntity<ResponseApiMessageStatus>,recebe dois parâmtros,sendo o primeiro taskDTO do tipo TaskDTO acompanhado das anotações 'RequestBody' (recuperar valores das requisições) e 'Valid' (validar conforme no DTO),e uriBuilder do tipo UriComponentsBuilder para path posteriormente.
-#### ↑ Tem uma variável response do tipo ResponseApiMessageStatus,que recebe o método createTaskService,vindo da service,que passa taskDTO como argumento.
-#### ↑ Tem uma variável path do tipo URI,que recebe o parâmetro uriBuilder,e acessa seu método path passando um caminho como argumento,acessando o método buildAndExpand passando como parâmetro o id vindo de taskDTO,e por último é transformado em URI através do método toUri.
-#### ↑ O retorno  é do ResponseEntity,acessando o método created passando como argumento a variável path,depois acessa o método body passando a variável response como argumento.
+#### A variável task é do tipo Task,recebe o retorno da service createTaskService,que recebe por argumento taskDTO.
+#### A variável taskId é do tipo Long,e acessa o método getId de task.
+#### Logo abaixo,há uma variável path do tipo URI,que recebe o parâmetro uriBuilder acessando o método path definindo o caminho até o id,logo após digo que o argumento do método buildAndExpand é taskId e depois transformo em URI.
+#### A variável message é do tipo String e recebe uma mensagem personalizada.A variável status é do tipo Integer e recebe um valor personalizado.A variável response do tipo ResponseApiMessageStatus,recebe uma nova instância de ResponseApiMessageStatus,passando como argumento message e status.
+#### O retorno é ResponseEntity,que acessa created inserindo o atributo path e depois acessa body inserindo a variável response.
 
 <br><br>
 
@@ -747,9 +918,9 @@ public ResponseEntity<Page<TaskDTO>> findAllTasks(@PageableDefault(size = 15) Pa
     return ResponseEntity.ok(pageableTasks);
 }
 ```
-#### ↑ O método findAllTasks,utiliza a anotação 'GetMapping',o retorno é do tipo ResponseEntity<Page<TaskDTO>>,recebe um parâmetro,um pageable do tipo Pageable,ainda com a anotação 'PageableDefault' setando o tamanho em 15,ou seja,o retorno é limitado até 15 registros.
-#### ↑ Tem uma variável pageableTasks do tipo Page<TaskDTO>,que recebe findAllTaskService do service,com pageable como argumento.
-#### ↑ O retorno é ResponseEntity,acessando o método ok,passando como argumento pageableTasks.
+#### O método findAllTasks,utiliza a anotação 'GetMapping',o retorno é do tipo ResponseEntity<Page<TaskDTO>>,recebe um parâmetro,um pageable do tipo Pageable,ainda com a anotação 'PageableDefault' setando o tamanho em 15,ou seja,o retorno é limitado até 15 registros.
+#### Tem uma variável pageableTasks do tipo Page<TaskDTO>,que recebe findAllTaskService do service,com pageable como argumento.
+#### O retorno é ResponseEntity,acessando o método ok,passando como argumento pageableTasks.
 
 <br><br>
 
@@ -761,9 +932,9 @@ public ResponseEntity<EntityModel<TaskDTO>> findTaskById(@PathVariable Long id) 
     return ResponseEntity.ok(entityModel);
 }
 ```
-#### ↑ O método findTaskById,utiliza a anotação 'GetMapping',o retorno é do tipo ResponseEntity<EntityModel<TaskDTO>>,recebe um parâmetro,um id do tipo Long e uma anotação 'PathVariable' na qual espera um id na url. 
-#### ↑ Tem uma variável entityModel do tipo EntityModel<TaskDTO>,que recebe findTaskByIdService de service,e passa id como argumento.
-#### ↑ O retorno é ResponseEntity,que acessa o método ok,e passa entityModel como argumento.
+#### O método findTaskById,utiliza a anotação 'GetMapping',o retorno é do tipo ResponseEntity<EntityModel<TaskDTO>>,recebe um parâmetro,um id do tipo Long e uma anotação 'PathVariable' na qual espera um id na url. 
+#### Tem uma variável entityModel do tipo EntityModel<TaskDTO>,que recebe findTaskByIdService de service,e passa id como argumento.
+#### O retorno é ResponseEntity,que acessa o método ok,e passa entityModel como argumento.
 
 <br><br>
 
@@ -775,9 +946,9 @@ public ResponseEntity<ResponseApiMessageStatus> updateTaskById(@PathVariable Lon
     return ResponseEntity.ok(response);
 }
 ```
-#### ↑ O método updateTaskById,utiliza a anotação 'PutMapping',o retorno é do tipo ResponseEntity<ResponseApiMessageStatus>,recebe dois parâmetros,o primeiro sendo um id do tipo Long e uma anotação 'PathVariable' na qual espera um id na url, e o segundo um taskDTO do tipo TaskDTO junto da anotação 'RequestBody' para receber os valores das requisições.
-#### ↑ Tem uma variável response do tipo ResponseApiMessageStatus,que recebe updateTaskByIdService da service,e passa id e taskDTO como argumentos.
-#### ↑ O retorno é ResponseEntity,que acessa o método ok,e passa response como argumento.
+#### O método updateTaskById,utiliza a anotação 'PutMapping',o retorno é do tipo ResponseEntity<ResponseApiMessageStatus>,recebe dois parâmetros,o primeiro sendo um id do tipo Long e uma anotação 'PathVariable' na qual espera um id na url, e o segundo um taskDTO do tipo TaskDTO junto da anotação 'RequestBody' para receber os valores das requisições.
+#### Tem uma variável response do tipo ResponseApiMessageStatus,que recebe updateTaskByIdService da service,e passa id e taskDTO como argumentos.
+#### O retorno é ResponseEntity,que acessa o método ok,e passa response como argumento.
 
 <br><br>
 
@@ -789,9 +960,9 @@ public ResponseEntity<Void> deleteTaskById(@PathVariable Long id){
     return ResponseEntity.noContent().build();
 }
 ```
-#### ↑ O método deleteTaskById,utiliza a anotação 'DeleteMapping',o retorno é do tipo ResponseEntity<Void>,recebe um parâmetro,sendo ele um id do tipo Long e uma anotação 'PathVariable' na qual espera um id na url.
-#### ↑ Acessa deleteTaskByIdService da service,e passa id como argumento.
-#### ↑ O retorno é ResponseEntity,que acessa noContent e depois um build.
+#### O método deleteTaskById,utiliza a anotação 'DeleteMapping',o retorno é do tipo ResponseEntity<Void>,recebe um parâmetro,sendo ele um id do tipo Long e uma anotação 'PathVariable' na qual espera um id na url.
+#### Acessa deleteTaskByIdService da service,e passa id como argumento.
+#### O retorno é ResponseEntity,que acessa noContent e depois um build.
 
 --------------------------------------------------------------------------------------
 
