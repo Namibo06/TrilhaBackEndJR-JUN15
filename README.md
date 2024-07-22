@@ -512,18 +512,27 @@ public ResponseApiMessageStatus updateUserByIdService(Long id,ResponseUserDTO us
 }
 ```
 #### O método retorna ResponseApiMessageStatus,sua finalidade é alterar o username e/ou email de um determinado usuário pelo seu id,que tem como parâmetro um id com tipo Long,e um userDTO do tipo ResponseUserDTO.
-#### Tem uma variável do tipo boolean que recebe o método existsUserId que recebe o id como argumento,para verificar se o usuário existe realmente,senão existir,é lançada uma exceção do tipo EntityNotFoundException com uma mensagem personalizada.
-#### Tem uma variável do tipo Optional<User> que facilita o uso do map e prepara caso o retorno seja nulo,a variável recebe um usuário pelo seu id,logo abaixo,utilizo uma expressão lambda map na variável setando 'user' como parâmetro,através dele seto username e email,os valores são recuperados através do atributo userDTO,chamo repository,e pelo seu método save,salvo a entidade user e a retorno.
-#### Crio duas variáveis personalizadas,um é message do tipo String,e o outro é status do tipo Integer e retorno uma nova instância de ResponseApiMessageStatus que recebe message e status como parâmetros. 
+#### É verificado se o nome de usuário é maior que 20 caracteres,se o nome de usuário é vazio,em todos é lançado uma exceção ValidationException,com mensagens personalizadas.É verificado também se o retorno do método existsById(),passando id como argumento,vindo de repository é false,se for lança RegisterNotFoundException com uma mensagem personalizada.
+#### A variável existingUser é do tipo User,e recebe o método findById() passando o id como argumento,acessando o  método orElseThrow(),lançando uma nova exceção RegisterNotFoundException com mensagem personalizada caso o retorno seja vazio.É verificado se o email vindo de existingUser for diferente do email vindo do userDTO e o retorno do acesso ao método existsByEmail() vindo de repository,passando o email vindo de userDTO,é lançado uma nova exceção de EmailAlreadyExistsException.  
+#### É setado em existingUser,o username vindo de userDTO e email vindo de existingUser.É verificado se o email de userDTO é nulo,se for é setado o email em existingUser vindo de userDTO.Acessa o método save() vindo de repository,passando como argumento existingUser.
+#### É criado duas variáveis personalizadas,um é message do tipo String,e o outro é status do tipo Integer e retorno uma nova instância de ResponseApiMessageStatus que recebe message e status como argumentos. 
 
 <br><br>
 
 #### ***▪ updatePasswordByIdService***
 ```
 public ResponseApiMessageStatus updatePasswordByIdService(Long id, ResponsePasswordDTO passwordDTO){
+    if(passwordDTO.getPassword().length() > 100){
+        throw new ValidationException("Tamanho da senha excedido,deve ter até 150 caracteres");
+    }
+
+    if(passwordDTO.getPassword().isEmpty()){
+        throw new ValidationException("Senha não pode ser nulo");
+    }
+
     boolean existsUser = existsUserById(id);
     if(!existsUser){
-        throw new EntityNotFoundException("Usuário não encontrado");
+        throw new RegisterNotFoundException("Usuário não encontrado");
     }
 
     Optional<User> userModel = repository.findById(id);
@@ -541,21 +550,94 @@ public ResponseApiMessageStatus updatePasswordByIdService(Long id, ResponsePassw
     return new ResponseApiMessageStatus(message,status);
 }
 ```
-#### ↑ O método retorna ResponseApiMessageStatus,sua finalidade é alterar a password de um determinado usuário pelo seu id,que tem como parâmetro um id com tipo Long,e um userDTO do tipo ResponsePasswordDTO.
-#### ↑ Primeiramente tem uma variável do tipo boolean que recebe o método existsUserId que recebe o id como argumento,para verificar se o usuário existe realmente,senão existir,é lançada uma exceção do tipo EntityNotFoundException com uma mensagem personalizada.
-#### ↑ Tem uma variável do tipo Optional<User> que facilita o uso do map e prepara caso o retorno seja nulo,a variável recebe um usuário pelo seu id,logo abaixo,utilizo uma expressão lambda map no atributo setando 'user' como parâmetro,através dele seto username,email e password,os valores são recuperados através do atributo userDTO,chamo repository,e pelo seu método save,salvo a entidade user e a retorno.
-#### ↑ Crio duas variáveis personalizadas,um é message do tipo String,e o outro é status do tipo Integer e retorno uma nova instância de ResponseApiMessageStatus que recebe message e status como parâmetros.
+#### O método retorna ResponseApiMessageStatus,sua finalidade é alterar a password de um determinado usuário pelo seu id,que tem como parâmetro um id com tipo Long,e um userDTO do tipo ResponsePasswordDTO.
+#### É verificado se a senha é maior que 100 caracteres,se a senha é vazia,em todos é lançado uma exceção ValidationException,com mensagens personalizadas.
+#### A variável existsUser,é do tipo boolean que recebe o método existsUserId() que recebe o id como argumento.É verificado se o retorno de existsUser é false,se for,é lançado uma nova exceção de RegisterNotFoundException,com uma mensagem personalizada. 
+#### Tem uma variável do tipo Optional<User> que facilita o uso do método map() e prepara caso o retorno seja nulo,a variável recebe um usuário pelo seu id,logo abaixo,utilizo uma expressão lambda map no atributo setando 'user' como parâmetro,através dele seto username,email e password,os valores são recuperados através do atributo userDTO,chamo repository,e pelo seu método save(),salvo a entidade user e a retorno.
+#### É criado duas variáveis personalizadas,um é message do tipo String,e o outro é status do tipo Integer e retorno uma nova instância de ResponseApiMessageStatus que recebe message e status como argumentos.
 
 <br><br>
 
 #### ***▪ deleteUserByIdService***
 ```
 public void deleteUserByIdService(Long id){
+    boolean existsUserId = repository.existsById(id);
+
+    if(!existsUserId){
+        throw new RegisterNotFoundException("Usuário não encontrado");
+    }
+
     repository.deleteById(id);
 }
 ```
-#### ↑ O método tem o tipo de retorno vazio,ou seja,sem retorno,sua finalidade é deletar um usuário pelo seu id,tem como parâmetro um id do tipo Long.
-#### ↑ através do repository,acessa o tipo deleteById com o id como argumento.
+#### O método tem o tipo de retorno vazio,ou seja,sem retorno,sua finalidade é deletar um usuário pelo seu id,tem como parâmetro um id do tipo Long.
+#### A variável existsUserId,é dotipo boolean,e acessa existsById de repository,passando como argumento id.É verificado se o retorno de existsUserId é false,se for,é lançado uma nova exceção RegisterNotFoundException,com uma mensagem personalizada.
+#### Através do repository,acessa o método deleteById(),passando o id como argumento.
+
+<br><br>
+
+#### ***▪ authenticateUser***
+```
+public Boolean authenticateUser(LoginDTO loginDTO) {
+    if(loginDTO.getEmail().length() > 20){
+        throw new ValidationException("Tamanho do email excedido,deve ter até 150 caracteres");
+    }
+
+    if(loginDTO.getEmail().isEmpty()){
+        throw new ValidationException("Email não pode ser nulo");
+    }
+
+    if(loginDTO.getPassword().length() > 100){
+        throw new ValidationException("Tamanho da senha excedido,deve ter até 150 caracteres");
+    }
+
+    if(loginDTO.getPassword().isEmpty()){
+        throw new ValidationException("Senha não pode ser nulo");
+    }
+
+    Optional<User> optionalUser = repository.findByEmail(loginDTO.getEmail());
+
+    if (optionalUser.isEmpty()) {
+        throw new CredentialsInvalidException("Email/Senha incorretos");
+    }
+
+    User user = optionalUser.get();
+
+    boolean checkPassword = encoder.matches(loginDTO.getPassword(), user.getPassword());
+
+    if (!checkPassword) {
+        throw new CredentialsInvalidException("Senhas não batem");
+    }
+
+    return true;
+}
+```
+#### O método de retorno é Boolean,e recebe o parâmetro loginDTO do tipo LoginDTO. 
+#### É verificado se o email é maior que 20 caracteres,se o email é vazio,se a senha é maior que 100 caracteres,se a senha é vazia,em todos é lançado uma exceção ValidationException,com mensagens personalizadas.
+#### A variável optionalUser é do tipo Optional<User>,e recebe o método findByEmail() vindo de repository,passando o email de loginDTO como argumento.É verificado se optionalUser é vazio,se for,é lançado uma nova exceção CredentialsInvalidException,com uma mensagem personalizada.
+#### A variável user é do tipo User,e recupera os valores de optionalUser.A variável checkPassword é do tipo boolean,recebe o método matches de encoders,a qual passa a password,vindas de loginDTO e user,para serem comparados.
+#### É verificado se checkPassword retorna false,se for,lança uma nova exceção CredentialsInvalidException,com uma mensagem personalizada,caso passe dessa condição,é retornado true.
+
+<br><br>
+
+#### ***▪ updateTokenById***
+```
+public ResponseApiMessageStatus updateTokenById(String email,String token){
+    User userModel = repository.findByEmail(email).orElseThrow(()-> new RegisterNotFoundException("Usuário não encontrado"));
+
+    userModel.setToken(token);
+    repository.save(userModel);
+
+    String message = "Token criado e atualizado com sucesso";
+    Integer status = 200;
+
+    return new ResponseApiMessageStatus(message,status);
+}
+```
+#### O método retorna ResponseApiMessageStatus,e recebe como parâmetros email do tipo String,e token do tipo String. 
+#### A variável userModel é do tipo User,recebe o método findByEmail() de repository,passando email como argumento,acessando o método orElseThrow(),que lança uma nova exceção RegisterNotFoundException,com uma mensagem personalizada.
+#### É setado o token no userModel,acessa o método save() de repository passando userModel como argumento.
+#### É criado duas variáveis personalizadas,um é message do tipo String,e o outro é status do tipo Integer e retorno uma nova instância de ResponseApiMessageStatus que recebe message e status como argumentos.
 
 <br><br><br>
 
@@ -586,10 +668,10 @@ public String createToken(){
     }
 }
 ```
-#### ↑ Tem como retorno uma String,não possui parâmetros.
-#### ↑ Possui um try/catch,na qual tenta o primeiro bloco,caso não vá,cai no catch.
-#### ↑ No try,é recuperado o horário atual na variável now do tipo Date,a variável expirationDate do tipo Date,cria uma nova data pegando a hora atual de 'now' e adiciona mais 1 hora em cima,a variável algorithm é responsável por definir o tipo de assinatura do Algorithm a partir da minha secret,e abaixo retorno um token criado setando a assinatura,a data de expiração do token e o emissor do token.   
-#### ↑ No catch o tipo a ser verificado é JWTCreationException,se for,tenho como variavel 'e' que irá armazenar a mensagem de erro,porém não é usada,lanço uma exceção RuntimeException com uma mensagem personalizada.
+#### Tem como retorno uma String,não possui parâmetros.
+#### Possui um try/catch,na qual tenta o primeiro bloco,caso não vá,cai no catch.
+#### No try,é recuperado o horário atual na variável now do tipo Date,a variável expirationDate do tipo Date,cria uma nova data pegando a hora atual de 'now' e adiciona mais 1 hora em cima,a variável algorithm é responsável por definir o tipo de assinatura do Algorithm a partir da minha secret,e abaixo retorno um token criado setando a assinatura,a data de expiração do token e o emissor do token.   
+#### No catch o tipo a ser verificado é JWTCreationException,se for,tenho como variavel 'e' que irá armazenar a mensagem de erro,porém não é usada,lanço uma exceção RuntimeException com uma mensagem personalizada.
 
 <br>
 
@@ -611,10 +693,10 @@ public void verifyToken(String token){
         }
     }
 ```
-#### ↑ Não possui retorno,e recebe um token como parâmetro do tipo String.
-#### ↑ Possui um try/catch,na qual tenta o primeiro bloco,caso não vá,cai no catch.
-#### ↑ No try,é setado o algorithm da mesma forma que está na parte de criação do token,tem uma variável verifier do tipo JWTVerifier que verifica o algoritmo,o emissor e builda,logo abaixo tenho uma variável decodedJWT do tipo DecodedJTW na qual recebe a variável verifier e por um método verify,verifica se o token ainda está válido.  
-#### ↑ Caso não fique no try,tenho dois catch's,o primeiro é do tipo SignatureVerificationException,e lanço uma exceção RuntimeException com mensagem personalizada com a variavel 'e' que captura o erro,e a segunda é do tipo JWTVerificationException na qual lanço uma exceção JWTVerificationException com uma mensagem personalizada com a variável 'e' qeu captura o erro do catch.
+#### Não possui retorno,e recebe um token como parâmetro do tipo String.
+#### Possui um try/catch,na qual tenta o primeiro bloco,caso não vá,cai no catch.
+#### No try,é setado o algorithm da mesma forma que está na parte de criação do token,tem uma variável verifier do tipo JWTVerifier que verifica o algoritmo,o emissor e builda,logo abaixo tenho uma variável decodedJWT do tipo DecodedJTW na qual recebe a variável verifier e por um método verify,verifica se o token ainda está válido.  
+#### Caso não fique no try,tenho dois catch's,o primeiro é do tipo SignatureVerificationException,e lanço uma exceção RuntimeException com mensagem personalizada com a variavel 'e' que captura o erro,e a segunda é do tipo JWTVerificationException na qual lanço uma exceção JWTVerificationException com uma mensagem personalizada com a variável 'e' qeu captura o erro do catch.
 
 
 <br><br><br>
@@ -633,24 +715,31 @@ public void verifyToken(String token){
 
 #### ***▪ createTaskService***
 ```
-public ResponseApiMessageStatus createTaskService(TaskDTO taskDTO){
+public Task createTaskService(TaskDTO taskDTO){
+    if(taskDTO.getTitle().length() > 150){
+        throw new ValidationException("Tamanho do titulo excedido,deve ter até 150 caracteres");
+    }
+
+    if (taskDTO.getTitle().isEmpty()){
+        throw new ValidationException("Titulo não pode ser nulo");
+    }
+
     boolean existsUserId=userService.existsUserById(taskDTO.getUserId());
     if (!existsUserId){
-        throw new EntityNotFoundException("Usuario não encontrado");
+        throw new RegisterNotFoundException("Usuário não encontrado");
     }
 
     Task taskModel = modelMapper.map(taskDTO, Task.class);
     repository.save(taskModel);
 
-    String message="Tarefa criada com sucesso";
-    Integer status=201;
-    return new ResponseApiMessageStatus(message,status);
+    return taskModel;
 }
 ```
-#### ↑ O retorno é do tipo ResponseApiMessageStatus e recebe por parâmetro um taskDTO do tipo TaskDTO.
-#### ↑ Tem uma variável existsUserById do tipo boolean que verifica se existe o id do usuário dentro do serviço do usuário através do método existsUserById,e verifica num if depois se retorna um false,caso retorne lança uma exceção EntityNotFoundException com uma mensagem personalizada,caso seja true,segue o fluxo sem entrar no if. 
-#### ↑ Tem uma variável taskModel do tipo Task que recebe um modelMapper para fazer um mapeamento de TaskDTO para Task(Model) e salva taskModel no banco de dados,através do método save da depêndencia repository.
-#### ↑ Tem uma variável message do tipo String já inicializado,e um status do tipo Integer já inicializado,e um retorno de uma nova instância de ResponseApiMessageStatus setando a message e status.
+#### O retorno é do tipo Task e recebe por parâmetro um taskDTO do tipo TaskDTO.
+#### É verificado se o titulo vindo de taskDTO,tem tamanho maior que 150 e se é vazio,caso entre em uma dessas condições,lançará uma nova exceção ValidationException,com uma mensagem personalizada.
+#### A variável existsUserId do tipo boolean que verifica se existe o id do usuário dentro do serviço do usuário através do método existsUserById,e verifica num if depois se retorna um false,caso retorne lança uma exceção RegisterNotFoundException com uma mensagem personalizada. 
+#### A variável taskModel do tipo Task que recebe um modelMapper para fazer um mapeamento de TaskDTO para Task(Model) e salva taskModel no banco de dados,através do método save() vindo de repository.
+#### Retorna taskModel.
 
 <br><br>
 
@@ -662,38 +751,46 @@ public Page<TaskDTO> findAllTasksService(Pageable pageable){
             .map(task -> modelMapper.map(task,TaskDTO.class));
 }
 ```
-#### ↑ O retorno é do tipo Page<TaskDTO> e recebe por parâmetro um pageable do tipo Pageable.
-#### ↑ Retorno direto do repository,o método findAll que recebe por argumento o pageable,e percorre por um map,tendo como parâmetro task,fazendo um mapeamento de task para TaskDTO.
+#### O retorno é do tipo Page<TaskDTO> e recebe por parâmetro um pageable do tipo Pageable.
+#### Retorno direto do repository,o método findAll() que recebe por argumento o pageable,e percorre por um map,tendo como parâmetro task,fazendo um mapeamento de task para TaskDTO.
 
 <br><br>
 
 #### ***▪ findTaskByIdService***
 ```
 public EntityModel<TaskDTO> findTaskByIdService(Long id){
-    Task taskModel = repository.findById(id).orElseThrow(()-> new EntityNotFoundException("Tarefa não encontrada"));
+    Task taskModel = repository.findById(id).orElseThrow(()-> new RegisterNotFoundException("Tarefa não encontrada"));
     TaskDTO taskDTO= modelMapper.map(taskModel, TaskDTO.class);
 
     return EntityModel.of(taskDTO,
             WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(TaskController.class).findById(id)).withSelfRel());
 }
 ```
-#### ↑ O retorno é do tipo EntityModel<TaskDTO> e recebe por parâmetro um di do tipo Long.
-#### ↑ Tem uma variável taskModel do tipo Task,que recebe repository,acessando seu método findById com o argumento id,e para proteger de voltar uma exceção NullPointerException,logo após o findById acesso mais um método orElseThrow que é um método da classe Optional,lançando um EntityNotFoundException com uma mensagem personalizada.
-#### ↑ Tem uma variável taskDTO do tipo TaskDTO que faz um mapeamento de taskModel para TaskDTO.
-#### ↑ O retorno é acessando o método of de EntityModel,passando por argumento,taskDTO e é adicionado um link através de linkTo do WebMvcLinkBuilder,em ```WebMvcLinkBuilder.methodOn(TaskController.class)``` é criado um proxy para simular uma chamada ao método controlador sem realmente executá-lo, ```findById``` o proxy chama o método findById no controller passando id como argumento,não executa o método mas registra as informações para construir o link,```withSelfRel()```  adiciona o link,que é apontado para o próprio recurso.
+#### O retorno é do tipo EntityModel<TaskDTO> e recebe por parâmetro um id do tipo Long.
+#### A variável taskModel do tipo Task,que recebe repository,acessando seu método findById() com o argumento id,e para proteger de voltar uma exceção NullPointerException,logo após o método findById() acesso mais um método orElseThrow que é um método da classe Optional,lançando um RegisterNotFoundException com uma mensagem personalizada.
+#### A variável taskDTO do tipo TaskDTO que faz um mapeamento de taskModel para TaskDTO.
+#### O retorno é acessando o método of de EntityModel,passando por argumento,taskDTO e é adicionado um link através de linkTo do WebMvcLinkBuilder,em ```WebMvcLinkBuilder.methodOn(TaskController.class)``` é criado um proxy para simular uma chamada ao método controlador sem realmente executá-lo, ```findById``` o proxy chama o método findById no controller passando id como argumento,não executa o método mas registra as informações para construir o link,```withSelfRel()```  adiciona o link,que é apontado para o próprio recurso.
 
 <br><br>
 
 #### ***▪ updateTaskByIdService***
 ```
 public ResponseApiMessageStatus updateTaskByIdService(Long id,TaskDTO taskDTO){
+    if(taskDTO.getTitle().length() > 150){
+        throw new ValidationException("Tamanho do titulo excedido,deve ter até 150 caracteres");
+    }
+
+    if (taskDTO.getTitle().isEmpty()){
+        throw new ValidationException("Titulo não pode ser nulo");
+    }
+
     boolean existsUserId=userService.existsUserById(taskDTO.getUserId());
 
     if (!existsUserId){
         throw new EntityNotFoundException("Usuário não encontrado");
     }
 
-    Task taskModel = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Tarefa não encontrada"));
+    Task taskModel = repository.findById(id).orElseThrow(() -> new RegisterNotFoundException("Tarefa não encontrada"));
     taskModel.setTitle(taskDTO.getTitle());
     taskModel.setDescription(taskDTO.getDescription());
     taskModel.setStatus(taskDTO.getStatus());
@@ -704,22 +801,30 @@ public ResponseApiMessageStatus updateTaskByIdService(Long id,TaskDTO taskDTO){
     return new ResponseApiMessageStatus(message,status);
 }
 ```
-#### ↑ O retorno é do tipo ResponseApiMessageStatus,que recebe como parâmetro id do tipo Long,e taskDTO do tipo TaskDTO.
-#### ↑ Tem uma variável existsUserId do tipo boolean,que recebe userService,acessando o mmétodo existsUserById,recebendo de argumento,taskDTO acessando o userId,e depois é verificada se o retorno for false,é lançada uma exceção EntityNotFoundException com uma mensagem personalizada.  
-#### ↑ Tem uma variável taskModel do tipo Task ,que recebe repository acessando o método findById,passando id como argumento,logo após acessando orElseThrow da classe Optional,para se proteger de NullPointerException.
-#### ↑ setando os atributos na variável taskModel através do método acessor setter,passando como argumentos,o métodos acessores getters de taskDTO,e por último salvando atráves do método save de repository,a taskModel. 
-#### ↑ Tenho duas variáveis,a primeira sendo message do tipo String e a segundo o statusdo tipo Integer,por último retorno uma nova instância de ResponseApiMessageStatus,passando por argumento,message e status.
+#### O retorno é do tipo ResponseApiMessageStatus,que recebe como parâmetro id do tipo Long,e taskDTO do tipo TaskDTO.
+#### É verificado se o titulo vindo de taskDTO,tem tamanho maior que 150 e se é vazio,caso entre em uma dessas condições,lançará uma nova exceção ValidationException,com uma mensagem personalizada.
+#### A variável existsUserId do tipo boolean,que recebe userService,acessando o método existsUserById(),recebendo de argumento,taskDTO acessando o userId,e depois é verificada se o retorno for false,é lançada uma exceção RegisterNotFoundException com uma mensagem personalizada.  
+#### A variável taskModel do tipo Task ,que recebe repository acessando o método findById(),passando id como argumento,logo após acessando orElseThrow da classe Optional,para se proteger de NullPointerException.
+#### Seta os atributos na variável taskModel através do método acessor setter,passando como argumentos,o métodos acessores getters de taskDTO,e por último salvando atráves do método save() de repository,a taskModel. 
+#### É criado duas variáveis,a primeira sendo message do tipo String e a segundo o status do tipo Integer,por último retorno uma nova instância de ResponseApiMessageStatus,passando por argumento,message e status.
 
 <br><br>
 
 #### ***▪ deleteTaskByIdService***
 ```
 public void deleteTaskByIdService(Long id){
+    boolean existsTaskId = repository.existsById(id);
+
+    if(!existsTaskId){
+        throw new RegisterNotFoundException("Tarefa não encontrada");
+    }
+
     repository.deleteById(id);
 }
 ```
-#### ↑ Não tem retorno,e recebe como parâmetro id do tipo Long.
-#### ↑ Acessa o método deleteById do repository,e passa como argumento o id.
+#### Não tem retorno,e recebe como parâmetro id do tipo Long.
+#### A variável existsTaskId é do tipo boolean,recebe o método existsById() vindo de repository,passado id como argumento.É verificado se existsTaskId retorna false,se for,é lançado uma nova exceção RegisterNotFoundException,com uma mensagem personalizada. 
+#### Acessa o método deleteById() do repository,e passa como argumento o id.
 
 
 ----------------------------------------------------------------------
