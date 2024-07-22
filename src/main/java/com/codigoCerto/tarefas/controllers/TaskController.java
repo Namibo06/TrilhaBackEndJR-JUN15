@@ -25,7 +25,7 @@ public class TaskController {
     private TaskService service;
 
     @PostMapping
-    @Operation(summary = "Secure Endpoint", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Criar Tarefa", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<ResponseApiMessageStatus> createTask(@RequestBody @Valid TaskDTO taskDTO, UriComponentsBuilder uriBuilder){
         Task task = service.createTaskService(taskDTO);
         Long taskId = task.getId();
@@ -39,7 +39,7 @@ public class TaskController {
     }
 
     @GetMapping
-    @Operation(summary = "Secure Endpoint", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Listar todas tarefas", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<Page<TaskDTO>> findAllTasks(@PageableDefault(size = 15) Pageable pageable){
         Page<TaskDTO> pageableTasks =  service.findAllTasksService(pageable);
 
@@ -47,7 +47,7 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Secure Endpoint", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Obter uma tarefa", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<EntityModel<TaskDTO>> findTaskById(@PathVariable Long id) {
         EntityModel<TaskDTO> entityModel = service.findTaskByIdService(id);
 
@@ -55,7 +55,7 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Secure Endpoint", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Atualizar uma tarefa", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<ResponseApiMessageStatus> updateTaskById(@PathVariable Long id,@RequestBody TaskDTO taskDTO){
         ResponseApiMessageStatus response = service.updateTaskByIdService(id,taskDTO);
 
@@ -63,7 +63,7 @@ public class TaskController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Secure Endpoint", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Deletar uma tarefa", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<Void> deleteTaskById(@PathVariable Long id){
         service.deleteTaskByIdService(id);
 

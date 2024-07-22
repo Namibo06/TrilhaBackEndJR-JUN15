@@ -22,6 +22,7 @@ public class LoginController {
     private UserService userService;
 
     @PostMapping
+    @Operation(summary = "Fazer Login")
     public ResponseEntity<ResponseTokenDTO> login(@RequestBody LoginDTO userDTO){
         Boolean existsUser = userService.authenticateUser(userDTO);
 
@@ -32,11 +33,10 @@ public class LoginController {
         ResponseTokenDTO response = new ResponseTokenDTO(tokenCreated,MESSAGE_OK,STATUS_OK);
 
         return ResponseEntity.ok(response);
-
     }
 
     @PostMapping("/{token}")
-    @Operation(summary = "Secure Endpoint", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Verificar Token", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<ResponseApiMessageStatus> verifyToken(@PathVariable String token){
         loginService.verifyToken(token);
 

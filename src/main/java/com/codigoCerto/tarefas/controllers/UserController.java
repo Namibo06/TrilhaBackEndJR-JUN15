@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -26,6 +25,7 @@ public class UserController {
     private UserService service;
 
     @PostMapping
+    @Operation(summary = "Criar usuário")
     public ResponseEntity<ResponseApiMessageStatus> createUser(@RequestBody UserDTO userDTO, UriComponentsBuilder uriBuilder){
         User user = service.createUserService(userDTO);
         Long userId = user.getId();
@@ -39,21 +39,21 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Secure Endpoint", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Obter um usuário", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<ResponseUserDTO> getUserById(@PathVariable Long id){
         ResponseUserDTO userById = service.findUserById(id);
         return ResponseEntity.ok(userById);
     }
 
     @GetMapping
-    @Operation(summary = "Secure Endpoint", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Listar usuáros", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<Page<UserDTO>> getAllUsers(@PageableDefault(size = 15) Pageable pageable){
         Page<UserDTO> userDTOList = service.findAll(pageable);
         return ResponseEntity.ok(userDTOList);
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Secure Endpoint", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Atualizar um usuário", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<ResponseApiMessageStatus> updateUserById(@PathVariable Long id,@RequestBody ResponseUserDTO userDTO){
         ResponseApiMessageStatus response = service.updateUserByIdService(id,userDTO);
 
@@ -61,7 +61,7 @@ public class UserController {
     }
 
     @PutMapping("updatePassword/{id}")
-    @Operation(summary = "Secure Endpoint", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Alterar senha do usuário", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<ResponseApiMessageStatus> updatePasswordById(@PathVariable Long id, @RequestBody ResponsePasswordDTO passwordDTO){
         ResponseApiMessageStatus response = service.updatePasswordByIdService(id,passwordDTO);
 
@@ -69,7 +69,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Secure Endpoint", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Deletar usuário", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<Void> deleteUserById(@PathVariable Long id){
         service.deleteUserByIdService(id);
         return ResponseEntity.noContent().build();
