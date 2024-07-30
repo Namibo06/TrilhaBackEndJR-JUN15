@@ -14,7 +14,7 @@ import org.springframework.web.reactive.config.ResourceHandlerRegistry;
         info = @Info(title = "API Tarefas", version = "v1"),
         security = @SecurityRequirement(name = "bearerAuth"),
         servers = {
-                @Server(url = "https://trilhabackendjr-jun15-production-e24a.up.railway.app", description = "Produção"),
+                @Server(url = "https://trilhabackendjr-jun15-production-b87f.up.railway.app", description = "Produção"),
                 @Server(url = "http://localhost:8080", description = "Local")
         }
 )

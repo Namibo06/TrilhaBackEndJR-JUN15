@@ -53,7 +53,7 @@
 ## Documentação
 
 ### Documentação Swagger (link para acessar abaixo)
-#### **https://trilhabackendjr-jun15-production-e24a.up.railway.app/swagger-ui/index.html#/**
+#### **https://trilhabackendjr-jun15-production-b87f.up.railway.app/swagger-ui/index.html#/**
 
 
 <br>
@@ -1071,4 +1071,4 @@ public ResponseEntity<Void> deleteTaskById(@PathVariable Long id){
 
 --------------------------------------------------------------------------------------
 
-#### Obs: Não foi conectado o SQLite local com o SQLite em produção,ou seja,o banco local somente irá puxar as requisições para o "localhost:8080/...",enquanto o banco em produção somente irá puxar os dados das requisições feitas para "https://trilhabackendjr-jun15-production-e24a.up.railway.app/..." 
+#### Obs: Não foi conectado o SQLite local com o SQLite em produção,ou seja,o banco local somente irá puxar as requisições para o "localhost:8080/...",enquanto o banco em produção somente irá puxar os dados das requisições feitas para "https://trilhabackendjr-jun15-production-b87f.up.railway.app/..." 

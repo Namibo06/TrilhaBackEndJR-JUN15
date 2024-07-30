@@ -17,7 +17,7 @@ public class Filter extends OncePerRequestFilter {
         String requestURI = request.getRequestURI();
         System.out.println(request.getMethod());
         if("/users".equals(requestURI) || "/login".equals(requestURI ) || requestURI.startsWith("/swagger-ui/") ||
-                requestURI.startsWith("/v3/api-docs") || requestURI.startsWith("http://trilhabackendjr-jun15-production-e24a.up.railway.app/") || requestURI.startsWith("/favicon.ico")){
+                requestURI.startsWith("/v3/api-docs") || requestURI.startsWith("http://trilhabackendjr-jun15-production-b87f.up.railway.app/") || requestURI.startsWith("/favicon.ico")){
             filterChain.doFilter(request,response);
             return;
         }
